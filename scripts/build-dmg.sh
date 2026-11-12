@@ -1,38 +1,36 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-# FineTune DMG Build Script
-# Requires: Xcode, Node.js 18+, GraphicsMagick, ImageMagick
-# Install dependencies: brew install graphicsmagick imagemagick
+# LazyTune DMG Build Script
+# Builds LazyTune.app using CommandLineTools and packages a drag-to-Applications DMG.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build"
+APP_BUNDLE="$BUILD_DIR/LazyTune.app"
+DMG_STAGING="$BUILD_DIR/dmg-staging"
+DMG_PATH="$BUILD_DIR/LazyTune.dmg"
 
-echo "==> Cleaning build directory..."
-rm -rf "$BUILD_DIR"
-mkdir -p "$BUILD_DIR"
+if [ ! -d "$APP_BUNDLE" ]; then
+    echo "==> Building LazyTune.app..."
+    "$SCRIPT_DIR/build-local-app.sh"
+fi
 
-echo "==> Building release archive..."
-xcodebuild -project "$PROJECT_DIR/FineTune.xcodeproj" \
-    -scheme FineTune \
-    -configuration Release \
-    -archivePath "$BUILD_DIR/FineTune.xcarchive" \
-    archive
+echo "==> Preparing DMG staging directory..."
+rm -rf "$DMG_STAGING" "$DMG_PATH"
+mkdir -p "$DMG_STAGING"
+cp -R "$APP_BUNDLE" "$DMG_STAGING/LazyTune.app"
+ln -s /Applications "$DMG_STAGING/Applications"
 
-echo "==> Exporting notarized app..."
-xcodebuild -exportArchive \
-    -archivePath "$BUILD_DIR/FineTune.xcarchive" \
-    -exportPath "$BUILD_DIR" \
-    -exportOptionsPlist "$PROJECT_DIR/ExportOptions.plist"
+echo "==> Creating compressed LazyTune.dmg..."
+hdiutil create \
+    -volname "LazyTune" \
+    -srcfolder "$DMG_STAGING" \
+    -ov \
+    -format UDZO \
+    "$DMG_PATH"
 
-echo "==> Creating DMG..."
-# create-dmg auto-generates professional layout with:
-# - App icon composited onto disk icon
-# - "Drag to Applications" layout
-# - Code signing
-npx create-dmg "$BUILD_DIR/FineTune.app" "$BUILD_DIR" --overwrite
+rm -rf "$DMG_STAGING"
 
-echo "==> Done!"
-echo "DMG created at: $BUILD_DIR/"
-ls -la "$BUILD_DIR"/*.dmg
+echo "==> Done! DMG created at: $DMG_PATH"
+ls -lh "$DMG_PATH"
