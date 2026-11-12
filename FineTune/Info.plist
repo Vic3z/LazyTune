@@ -5,19 +5,13 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSAudioCaptureUsageDescription</key>
-	<string>FineTune needs access to control volume levels for individual applications.</string>
+	<string>LazyTune needs access to control volume levels for individual applications.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>FineTune needs microphone access to capture audio from apps using input-capable devices.</string>
+	<string>LazyTune needs microphone access to capture audio from apps using input-capable devices.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>FineTune uses Bluetooth to connect paired audio devices from the menu bar.</string>
+	<string>LazyTune uses Bluetooth to connect paired audio devices from the menu bar.</string>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>FineTune uses Apple Events to control playback and read track information from web browsers and media players (universal media control).</string>
-	<key>SUFeedURL</key>
-	<string>https://raw.githubusercontent.com/ronitsingh10/FineTune/main/appcast.xml</string>
-	<key>SUPublicEDKey</key>
-	<string>xExSoQmCLDCez0KyhZ9EM9PdOZFZgyX/+VF+OVrpIlo=</string>
-	<key>SUEnableInstallerLauncherService</key>
-	<true/>
+	<string>LazyTune uses Apple Events to control playback and read track information from web browsers and media players (universal media control).</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
