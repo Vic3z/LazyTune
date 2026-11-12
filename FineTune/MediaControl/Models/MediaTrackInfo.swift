@@ -3,7 +3,7 @@ import AppKit
 import Foundation
 
 /// Metadata describing the currently playing (or paused) media track/stream,
-/// modeled after BeardedSpice's `BSTrack` and extended for FineTune's UI & HUD.
+/// modeled after universal `BSTrack` and extended for FineTune's UI & HUD.
 nonisolated struct MediaTrackInfo: Equatable, Sendable {
     var title: String
     var artist: String?
@@ -37,7 +37,7 @@ nonisolated struct MediaTrackInfo: Equatable, Sendable {
         self.bundleID = bundleID
     }
 
-    /// Parses a dictionary returned by a BeardedSpice JS `trackInfo()` evaluation.
+    /// Parses a dictionary returned by a Universal Media JS `trackInfo()` evaluation.
     init?(jsDictionary dict: [String: Any], playerName: String, bundleID: String? = nil) {
         let rawTrack = (dict["track"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let rawArtist = (dict["artist"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)

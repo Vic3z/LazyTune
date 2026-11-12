@@ -67,7 +67,7 @@ struct ShortcutsTab: View {
             SettingsRowDivider()
             SettingsRow(
                 "Universal Playback Media Keys (F7 / F8 / F9)",
-                description: "Control any browser tab or music app (BeardedSpice mode) without launching Apple Music"
+                description: "Control any browser tab or music app (Universal Media mode) without launching Apple Music"
             ) {
                 Toggle("", isOn: $settings.appSettings.mediaPlayerControlEnabled)
                     .toggleStyle(.switch)

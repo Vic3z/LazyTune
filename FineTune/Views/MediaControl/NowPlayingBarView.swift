@@ -2,7 +2,7 @@
 import SwiftUI
 import AppKit
 
-/// Compact Liquid-Glass "Now Playing" & BeardedSpice media controller card inside FineTune's popup.
+/// Compact Liquid-Glass "Now Playing" & Universal Media media controller card inside FineTune's popup.
 @MainActor
 struct NowPlayingBarView: View {
     @Bindable var mediaController: MediaPlayerController
@@ -46,7 +46,7 @@ struct NowPlayingBarView: View {
         }
     }
 
-    // MARK: - Target Selector Menu (BeardedSpice Player List)
+    // MARK: - Target Selector Menu (Universal Media Player List)
 
     private var targetSelectorMenu: some View {
         Menu {
@@ -102,7 +102,7 @@ struct NowPlayingBarView: View {
         }
         .menuStyle(.borderlessButton)
         .fixedSize()
-        .help("Select active media player or browser tab (BeardedSpice mode)")
+        .help("Select active media player or browser tab (Universal Media mode)")
     }
 
     // MARK: - Player Card

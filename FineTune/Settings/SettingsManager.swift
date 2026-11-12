@@ -45,7 +45,7 @@ nonisolated struct AppSettings: Codable, Equatable {
     var mediaKeyControlEnabled: Bool = true        // Intercept F10/F11/F12 to drive the default output device
     var volumeHotkeyStep: VolumeHotkeyStep = .normal  // Slider-domain step per keypress; user-configurable
 
-    // Universal Media Player Control (BeardedSpice Integration)
+    // Universal Media Player Control (Universal Media Integration)
     var mediaPlayerControlEnabled: Bool = true     // Intercept F7/F8/F9 to control browser tabs & media apps
     var showMediaHUD: Bool = true                  // Show Tahoe-style track HUD on playback actions
     var showNowPlayingInPopup: Bool = true         // Show Now Playing mini-player bar in menu bar popup
@@ -53,7 +53,7 @@ nonisolated struct AppSettings: Codable, Equatable {
     var autoPauseOnSleep: Bool = true              // Pause active player when Mac goes to sleep
     var pausePreviousOnPlayerSwitch: Bool = true   // Pause previous player when switching active target
     var universalHTML5FallbackEnabled: Bool = true // Control any website with <video>/<audio>
-    var disabledMediaStrategies: Set<String> = []  // IDs of disabled BeardedSpice strategies
+    var disabledMediaStrategies: Set<String> = []  // IDs of disabled Universal Media strategies
 
     // Global Hotkeys
     // Keyed by ShortcutAction.rawValue. Values mirror what KeyboardShortcuts persists in

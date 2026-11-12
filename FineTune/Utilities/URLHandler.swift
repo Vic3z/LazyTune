@@ -58,7 +58,7 @@ final class URLHandler {
             handleSetDevice(queryItems: queryItems)
         case "reset":
             handleReset(queryItems: queryItems)
-        // Universal Media Control actions (BeardedSpice mode)
+        // Universal Media Control actions (Universal Media mode)
         case "media-playpause":
             mediaPlayerController?.playPauseToggle()
         case "media-next":

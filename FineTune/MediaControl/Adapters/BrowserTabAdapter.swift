@@ -256,7 +256,7 @@ final class BrowserTabAdapter: MediaTargetAdapting {
         return windowIndex == 1 && isActiveInWindow
     }
 
-    // MARK: - JavaScript Execution with BeardedSpice `javascript:` URL Fallback
+    // MARK: - JavaScript Execution with Universal Media `javascript:` URL Fallback
 
     private func combinedScript(primary: String, fallback: String) -> String {
         if primary.isEmpty { return fallback }
@@ -347,7 +347,7 @@ final class BrowserTabAdapter: MediaTargetAdapting {
             return
         }
 
-        // BeardedSpice ChromeTabAdapter fallback when "Allow JavaScript from Apple Events" is disabled:
+        // Universal Media ChromeTabAdapter fallback when "Allow JavaScript from Apple Events" is disabled:
         // assigns `javascript:(function(){ ... })()` to `URL of tab`, which executes in page context!
         if browser.kind == .chromium || browser.kind == .arc {
             let oneLineJS = js

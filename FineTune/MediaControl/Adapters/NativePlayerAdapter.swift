@@ -3,7 +3,7 @@ import AppKit
 import Foundation
 import os
 
-/// Definition of native macOS media players supported out of the box (modeled after BeardedSpice's
+/// Definition of native macOS media players supported out of the box (modeled after universal
 /// `NativeAppTabAdapter` subclasses: `SpotifyTabAdapter`, `iTunesTabAdapter`, `VLCTabAdapter`,
 /// `VOXTabAdapter`, `TidalTabAdapter`, plus modern macOS players like IINA, Swinsian, Doppler, etc.).
 nonisolated struct NativePlayerDefinition: Sendable, Identifiable {

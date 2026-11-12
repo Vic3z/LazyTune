@@ -30,7 +30,7 @@ struct MenuBarPopupView: View {
     /// wired in `FineTuneApp.init`.
     let mediaKeyMonitor: MediaKeyMonitor
 
-    /// Universal BeardedSpice media player controller for the Now Playing mini-player bar.
+    /// Universal Universal Media media player controller for the Now Playing mini-player bar.
     @Bindable var mediaController: MediaPlayerController
 
     /// Memoized sorted output devices - only recomputed when device list or default changes

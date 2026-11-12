@@ -65,7 +65,7 @@ final class MediaKeyMonitor {
     /// Plays the system volume-feedback pop on volume key steps. Wired by FineTuneApp after init.
     var feedbackPlayer: VolumeFeedbackPlayer?
 
-    /// Universal BeardedSpice media player controller for F7/F8/F9 playback keys. Wired by FineTuneApp after init.
+    /// Universal Universal Media media player controller for F7/F8/F9 playback keys. Wired by FineTuneApp after init.
     var mediaPlayerController: MediaPlayerController?
 
     private var isAnyTapFeatureEnabled: Bool {
@@ -129,7 +129,7 @@ final class MediaKeyMonitor {
         let mask = CGEventMask(1 << 14)
         let userInfo = Unmanaged.passUnretained(self).toOpaque()
 
-        // Try HID-level tap first; fall back to Session-level tap (BeardedSpice SPMediaKeyTap style),
+        // Try HID-level tap first; fall back to Session-level tap (Universal Media SPMediaKeyTap style),
         // then listenOnly tap if active swallowing tap is disallowed when AXTrusted is false.
         let candidates: [(CGEventTapLocation, CGEventTapOptions, String)] = [
             (.cghidEventTap, .defaultTap, "hid-default"),
@@ -549,7 +549,7 @@ final class MediaKeyMonitor {
         let data1 = nsEvent.data1
         let keyType = Int32((data1 & 0xFFFF0000) >> 16)
 
-        // BeardedSpice F7/F8/F9 playback keys (16=Play, 17=Next, 18=Previous, 19=Fast, 20=Rewind):
+        // Universal Media F7/F8/F9 playback keys (16=Play, 17=Next, 18=Previous, 19=Fast, 20=Rewind):
         // Swallow BOTH key-down and key-up so macOS `rcd` never receives key-up to launch Apple Music.
         // Dispatch playback action asynchronously so the CGEventTap callback returns immediately (<1us)
         // and never triggers kCGEventTapDisabledByTimeout during AppleScript IPC.

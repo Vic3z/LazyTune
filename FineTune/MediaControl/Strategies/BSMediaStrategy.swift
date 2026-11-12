@@ -20,7 +20,7 @@ nonisolated struct SerializedBSMediaStrategy: Codable, Sendable {
     let trackInfoScript: String
 }
 
-/// Swift 6 port of BeardedSpice's `BSMediaStrategy` (`BSMediaStrategy.h/.m`),
+/// Swift 6 port of universal `BSMediaStrategy` (`BSMediaStrategy.h/.m`),
 /// loaded from pre-compiled JSON (`MediaStrategies.json`) with zero JavaScriptCore heap overhead.
 nonisolated final class BSMediaStrategy: Identifiable, Sendable {
     enum AcceptMethod: Sendable {
@@ -128,9 +128,9 @@ nonisolated final class BSMediaStrategy: Identifiable, Sendable {
         }
     }
 
-    /// Safely evaluates BeardedSpice's `NSPredicate` format strings against `{ "URL": url, "title": title }`.
+    /// Safely evaluates universal `NSPredicate` format strings against `{ "URL": url, "title": title }`.
     static func evaluateTabPredicate(format: String, args: [String], url: String, title: String) -> Bool {
-        // Normalize key names used across BeardedSpice strategies ("URL" vs "url", "title")
+        // Normalize key names used across Universal Media strategies ("URL" vs "url", "title")
         let targetObj: NSDictionary = [
             "URL": url,
             "url": url,
@@ -147,7 +147,7 @@ nonisolated final class BSMediaStrategy: Identifiable, Sendable {
                 predicateArgs.append(arg)
             }
         }
-        // Fix common BeardedSpice predicate quirk where `%@ LIKE[c]` was written instead of `%K LIKE[c]` for keypath args
+        // Fix common Universal Media predicate quirk where `%@ LIKE[c]` was written instead of `%K LIKE[c]` for keypath args
         for (idx, arg) in args.enumerated() where idx > 0 && (arg.caseInsensitiveCompare("url") == .orderedSame || arg.caseInsensitiveCompare("title") == .orderedSame) {
             if let range = normalizedFormat.range(of: "%@ LIKE") {
                 normalizedFormat.replaceSubrange(range, with: "%K LIKE")
@@ -338,10 +338,10 @@ nonisolated final class BSMediaStrategy: Identifiable, Sendable {
     )
 }
 
-/// Pure-Swift predicate evaluator so invalid BeardedSpice format strings never throw an uncaught Objective-C exception.
+/// Pure-Swift predicate evaluator so invalid Universal Media format strings never throw an uncaught Objective-C exception.
 private enum ObjCExceptionCatcher {
     static func evaluatePredicate(format: String, argumentArray: [Any], object: NSDictionary) -> Bool {
-        // Fast, safe parser for BeardedSpice's `%K LIKE[c] '*pattern*'` predicates
+        // Fast, safe parser for universal `%K LIKE[c] '*pattern*'` predicates
         let url = (object["URL"] as? String) ?? ""
         let title = (object["title"] as? String) ?? ""
 

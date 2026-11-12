@@ -3,7 +3,7 @@ import AppKit
 import Foundation
 
 /// Unified interface representing any controllable media target:
-/// either a specific browser tab (controlled via BeardedSpice JS strategy + Universal HTML5 fallback)
+/// either a specific browser tab (controlled via Universal Media JS strategy + Universal HTML5 fallback)
 /// or a native desktop media application (Spotify, VLC, IINA, VOX, Tidal, Apple Music, etc.).
 @MainActor
 protocol MediaTargetAdapting: AnyObject {

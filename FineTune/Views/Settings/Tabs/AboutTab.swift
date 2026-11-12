@@ -32,7 +32,7 @@ struct AboutTab: View {
                     .font(.system(size: 22, weight: .semibold))
                     .foregroundStyle(DesignTokens.Colors.textPrimary)
 
-                Text("Unified Audio Mixer + BeardedSpice Media Control")
+                Text("Unified Audio Mixer & Universal Media Control")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
 

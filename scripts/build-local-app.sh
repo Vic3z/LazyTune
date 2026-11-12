@@ -100,7 +100,7 @@ for root, _, files in os.walk(src_root):
             fh.write(cleaned)
 PY
 
-echo "==> [3/5] Compiling unified LazyTune (FineTune + BeardedSpice) binary..."
+echo "==> [3/5] Compiling unified LazyTune (LazyTune) binary..."
 
 xcrun swiftc \
     -target arm64-apple-macos15.4 \
@@ -197,7 +197,7 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<'PLIST'
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>LazyTune uses Bluetooth to connect paired audio devices from the menu bar.</string>
 	<key>NSAppleEventsUsageDescription</key>
-	<string>LazyTune uses Apple Events to control playback and read track information from web browsers and media players (BeardedSpice universal media control).</string>
+	<string>LazyTune uses Apple Events to control playback and read track information from web browsers and media players (universal media control).</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

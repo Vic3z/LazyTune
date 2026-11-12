@@ -1,128 +1,102 @@
-<img src="assets/icon.png" width="170" height="170" alt="LazyTune app icon" align="left"/>
+<img src="assets/icon.png" width="160" height="160" alt="LazyTune app icon" align="left"/>
 
-<h3>LazyTune (Lazy Tune)</h3>
+<h3>LazyTune</h3>
 
-Unified macOS audio mixer + **BeardedSpice** universal media key controller (`F7` / `F8` / `F9`). Control the volume of every app independently, route audio to different speakers, and control playback across Spotify, YouTube, SoundCloud, Twitch, Safari, Chrome, Brave, Arc, VLC, IINA, and 100+ web players from a single ultra-lightweight menu bar app (`~50 MB` RAM, `0.0%` idle CPU, lazy-loaded EQ, zero background update checks).
+**All-in-one macOS per-app audio mixer and universal media key controller (`F7` / `F8` / `F9`).**
+Control the volume of every app independently, route audio to different speakers, and control playback across **Spotify, YouTube, SoundCloud, Twitch, Safari, Chrome, Brave, Arc, VLC, IINA**, and **100+ web players** without macOS ever launching Apple Music by mistake. Engineered for minimal resource usage (**~50 MB RAM**, **0.0% idle CPU**, lazy-loaded EQ, and zero background update telemetry).
 
 <br clear="all"/>
 
 <p align="center">
-  <a href="https://github.com/ronitsingh10/FineTune/releases/latest"><img src="https://img.shields.io/github/v/release/ronitsingh10/FineTune?style=for-the-badge&labelColor=1c1c1e&color=0A84FF&logo=github&logoColor=white" alt="Latest Release"></a>
-  <a href="https://github.com/ronitsingh10/FineTune/releases"><img src="https://img.shields.io/github/downloads/ronitsingh10/FineTune/total?style=for-the-badge&labelColor=1c1c1e&color=3a3a3c" alt="Downloads"></a>
+  <a href="https://github.com/Vic3z/LazyTune"><img src="https://img.shields.io/badge/Repo-Vic3z%2FLazyTune-0A84FF?style=for-the-badge&labelColor=1c1c1e&logo=github&logoColor=white" alt="GitHub Repository"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-3a3a3c?style=for-the-badge&labelColor=1c1c1e" alt="License: GPL v3"></a>
-  <a href="https://ko-fi.com/ronitsingh10"><img src="https://img.shields.io/badge/Tip_on_Ko--fi-FF5E5B?style=for-the-badge&labelColor=1c1c1e&logo=ko-fi&logoColor=white" alt="Tip on
-  Ko-fi"></a>
-  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-15%2B-3a3a3c?style=for-the-badge&labelColor=1c1c1e&logo=apple&logoColor=white" alt="macOS 15+"></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-15.4%2B-3a3a3c?style=for-the-badge&labelColor=1c1c1e&logo=apple&logoColor=white" alt="macOS 15.4+"></a>
+  <img src="https://img.shields.io/badge/RAM-~50_MB-30D158?style=for-the-badge&labelColor=1c1c1e" alt="RAM ~50 MB">
+  <img src="https://img.shields.io/badge/Idle_CPU-0.0%25-30D158?style=for-the-badge&labelColor=1c1c1e" alt="Idle CPU 0.0%">
 </p>
 
 <p align="center">
-  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
+  <img src="assets/screenshot-media.png" alt="LazyTune Universal Media Control showing the Now Playing mini-player bar, F7/F8/F9 hardware media key routing, and 100+ supported web and native players" width="740">
 </p>
 
 <p align="center">
-  <img src="assets/screenshot-main.png" alt="FineTune popup showing per-app volume control, multi-device output routing with picker popover, AutoEQ headphone correction, and device-level volume sliders" width="700">
-</p>
-<p align="center">
-  <img src="assets/screenshot-eq.png" alt="FineTune showing the Brave Browser app row expanded with the EQ panel open and a Vocal Clarity preset selected" width="700">
+  <img src="assets/screenshot-main.png" alt="LazyTune popup showing per-app volume control, multi-device output routing, and device-level volume sliders" width="700">
 </p>
 
-## Install
+---
 
-**Homebrew** (recommended)
+## ✨ What's New in LazyTune
+
+### 🎵 Universal Media Keys (`F7` / `F8` / `F9`) & Web/Native Player Control
+- **Universal `F7` (Previous), `F8` (Play/Pause), `F9` (Next)** — Hardware media keys control whichever media player or browser tab is currently active, without ever waking or launching Apple Music when it's closed.
+- **CoreAudio-Aware Smart Target Resolution** — LazyTune combines browser/player inspection with its real-time CoreAudio process tap to automatically know which tab or app is actually producing sound right now.
+- **Now Playing Mini-Player in Menu Bar** — View current track title, artist, album, and artwork directly at the top of the popup, with instant Play/Pause, Next, Previous, Favorite/Like, Bring-to-Front, and a target selector menu to pin any open player or browser tab.
+- **103 Built-in Web Media Adapters + Universal HTML5 Fallback** — Works out of the box with **YouTube, YouTube Music, SoundCloud, Spotify Web, Twitch, Bandcamp, Netflix, Tidal, Deezer, MixCloud, Apple Podcasts, Coursera, Udemy**, and any website with an HTML5 `<video>` or `<audio>` element across **Safari, Google Chrome, Brave, Arc, Microsoft Edge, Vivaldi, Orion, and Opera**.
+- **Native Desktop Players** — Native control and real-time push notifications (`DistributedNotificationCenter`) for **Spotify, VLC, IINA, VOX, Swinsian, TIDAL, Qobuz, Deezer, Amazon Music, and Apple Music**.
+- **Auto-Pause on Headphone Unplug & Sleep** — Automatically pauses active playback when Bluetooth headphones (AirPods, Sony, Bose) or external USB DACs disconnect, or when your Mac goes to sleep.
+- **Tahoe Now Playing HUD** — Optional on-screen glass HUD displaying track metadata and playback state transitions when pressing media keys or switching players.
+
+### ⚡ Ultra-Lightweight & Zero-Overhead Engine
+- **~50 MB RAM Footprint (-76% vs upstream)** — All 103 web media strategies are pre-compiled into a static JSON bundle (`MediaStrategies.json`), completely eliminating `JavaScriptCore` (`WebKit malloc`) from runtime memory.
+- **0.0% Idle CPU** — Uses native macOS push notifications (`DistributedNotificationCenter`) and in-memory CoreAudio peak levels instead of background AppleScript polling; pauses UI VU-meter timers completely while the popup is closed.
+- **Lazy-Loaded EQ & AutoEQ** — The 10-band biquad filter banks and the 6,000+ headphone AutoEQ catalog consume **0 bytes of RAM and 0% CPU** unless you explicitly enable EQ or open the AutoEQ picker.
+- **Zero Background Update Checks** — `Sparkle.framework` background update telemetry is completely removed.
+
+---
+
+## 🚀 Build & Install
+
+### Build from Source (No full Xcode.app required — works with Command Line Tools)
 
 ```bash
-brew install --cask finetune
+git clone https://github.com/Vic3z/LazyTune.git
+cd LazyTune
+./scripts/build-local-app.sh
+cp -R build/LazyTune.app /Applications/LazyTune.app
+open /Applications/LazyTune.app
 ```
 
-**Manual** — [Download latest release](https://github.com/ronitsingh10/FineTune/releases/latest)
+---
 
-## Quick Start
+## 🛠 Full Feature Overview
 
-1. Install FineTune and launch it from your Applications folder
-2. Grant **Screen & System Audio Recording** permission when prompted
-3. Click the FineTune icon in your menu bar. Apps playing audio appear automatically.
+### 🎚 Per-App Audio Mixer & Routing
+- **Per-app volume & mute** — Individual sliders and mute toggles for each running application
+- **Per-app volume boost** — `1x / 2x / 3x / 4x` gain boost for quiet apps or videos
+- **Multi-device output & per-app routing** — Send specific apps to different audio outputs (e.g. music to speakers, calls to headphones) or route to multiple devices simultaneously
+- **Device priority & auto-restore** — Automatically switch to your preferred output/input device when connected and restore per-app settings on reconnect
+- **Smart volume backend (Hardware / DDC / Software)** — Control volume on built-in speakers, Bluetooth headphones, USB DACs, and external HDMI/DisplayPort monitors (via DDC)
 
-That's it. Adjust sliders, route audio, and explore EQ from the menu bar.
+### ⌨️ Global Shortcuts & URL Automation
+- **Global hotkeys** — Configurable shortcuts for Play/Pause, Next, Previous, Like/Favorite, Switch Active Media Player, Pin Active Tab, Show Track Info HUD, App Volume Up/Down/Mute, and Toggle Popup
+- **URL schemes (`lazytune://` & `finetune://`)** — Automate playback and mixer actions from Raycast, Alfred, Apple Shortcuts, or shell scripts:
+  ```bash
+  open "lazytune://media-play-pause"
+  open "lazytune://media-next"
+  open "lazytune://media-previous"
+  open "lazytune://media-switch-player"
+  ```
 
-> **Tip:** Want FineTune to auto-switch to a specific device when you connect it? Open edit mode (pencil icon) and drag it above the built-in speakers. This is a one-time setup. Your preferred order is saved permanently.
+### 🎛 Lazy-Loaded EQ & Audio Shaping
+- **10-band graphic EQ** — 20 built-in presets + custom per-app presets (allocated only when enabled)
+- **AutoEQ headphone correction** — On-demand search across 6,000+ headphone profiles or custom `ParametricEQ.txt` import
+- **ISO 226:2023 Loudness Compensation** — Optional equal-loudness contour compensation at low listening volumes
 
-## Features
+---
 
-### 🎚 Volume Control
-- **Per-app volume** — Individual sliders and mute for each application
-- **Per-app volume boost** — 2x / 3x / 4x gain presets
-- **Pinned apps** — Keep apps visible in the menu bar even when they're not playing, so you can configure volume, EQ, and routing in advance
-- **Ignore apps** — Completely disengage FineTune from specific apps. Tears down the audio tap so the app returns to normal macOS audio
-- **Scroll-wheel volume** — Hover any slider in the popup, the HUD, or the EQ panel and scroll to adjust.
+## 📋 Requirements
 
-### ⌨️ Keyboard
-- **Global volume hotkeys** — Bind your own keys to **App Volume Up**, **App Volume Down**, and **App Mute** from Settings → Shortcuts. The "app" is whichever is currently making sound, so volume-down while a YouTube tab plays behind a foreground Terminal turns down YouTube, not the terminal. If nothing is audible, the hotkey falls through to the frontmost app.
-- **Toggle the popup from anywhere** — Bind a hotkey to **Toggle FineTune Popup** and the menu bar opens or closes on demand, including from full-screen apps.
-- **Configurable step size** — Pick **Coarse / Normal / Fine / Extra-Fine** under Settings → Shortcuts → Volume Step. The same setting governs the F10–F12 media keys, the global hotkeys, and the popup's arrow-key navigation.
-- **Hold to ramp, auto-unmute on volume-up** — Holding App Volume Up or Down emits repeats the way macOS does for arrow keys. Volume-up while muted unmutes and sets the new level in one keystroke.
-- **Drive the popup with the keyboard** — Once the popup is open, **↑ / ↓** move between rows, **← / →** adjusts the focused row's volume (Shift = 2× step), **M** toggles mute, **Return / Space** activates, **Tab** switches between Output and Input device tabs, **Esc** closes. The focused row autoscrolls to center as you arrow through.
+- **macOS 15.4** or later (Apple Silicon)
+- **Audio Capture Permission** (prompted on first launch for per-app volume mixing)
+- **Automation / Apple Events Permission** (prompted when controlling Spotify or browser tabs)
 
-### 🔀 Audio Routing
-- **Multi-device output** — Route audio to multiple devices simultaneously
-- **Audio routing** — Send apps to different outputs or follow system default
-- **Device priority** — Choose which device FineTune switches to when a new device connects; auto-fallback on disconnect
-- **Auto-restore** — When a device reconnects, apps automatically return to it with their volume, routing, and EQ intact
+---
 
-### 🎛 EQ & Correction
-- **10-band EQ** — 20 presets across 5 categories
-- **User EQ presets** — Save, rename, and manage custom EQ configurations per app
-- **AutoEQ headphone correction** — Search thousands of headphone profiles or import your own ParametricEQ.txt files for per-device frequency response correction
-- **Loudness compensation** — Automatic bass and treble correction at low volumes using ISO 226:2023 equal-loudness contours, with real-time level management to keep perceived loudness consistent
+## 🙏 Credits & Acknowledgments
 
-### 🖥 Devices & System
-- **Input device control** — Monitor and adjust microphone levels
-- **Alert volume** — Control macOS notification and alert volume from settings
-- **Smart volume backend** — FineTune auto-picks hardware, DDC, or software volume per device. If the hardware slider on a USB DAC or HDMI output doesn't actually control level, force software volume from the device inspector and FineTune remembers the choice for that device
-- **Device inspector** — Tap the info button on any device row for sample rate (with picker), transport, UID copy, hog-mode banner, and the software-volume override
-- **Hide devices** — Eye toggle in edit mode hides output and input devices you don't want in the list, mirroring the app-hide flow
-- **Bluetooth device management** — Connect paired devices directly from the menu bar
-- **Monitor speaker control** — Adjust volume on external displays via DDC
-- **Media keys & Volume HUD** — Opt-in F10–F12 control for the default output device, with a Tahoe-style or Classic-style on-screen HUD. The write goes through FineTune's volume pipeline, so keys keep working on USB interfaces and HDMI outputs where macOS's own keys are greyed out because the hardware slider is broken.
-- **Dynamic menu bar icon** — Pick from four styles in Settings (Default, Speaker, Waveform, Equalizer). The **Speaker** style tracks volume live (zero / low / mid / high glyphs) and switches to a slashed speaker when muted. All styles briefly flash the new output's SF Symbol on device switch. Changing style applies instantly, no relaunch required.
-- **Menu bar app** — Lightweight, always accessible
-- **URL schemes** — Automate volume, mute, device routing, and more from scripts
+- **LazyTune** is developed and maintained by **[Vic3z](https://github.com/Vic3z)**.
+- Forked from and built upon the core audio mixer architecture of **[FineTune](https://github.com/ronitsingh10/FineTune)** by **Ronit Singh**.
 
-### 🎨 Appearance
-- **Light or Dark theme** — Settings → General → Theme matches macOS or locks FineTune to Light or Dark. The menu bar popup, every popover, and the volume HUD switch immediately.
-- **Popup density** — Settings → General → Popup Size picks **Compact / Comfortable / Spacious** with a live tile preview. Compact fits more apps on small screens; Spacious gives bigger hit areas for trackpads.
+## 📄 License
 
-## Documentation
-
-- **[AutoEQ & Headphone Correction](guide/autoeq.md)** — Apply frequency correction from the [AutoEQ](https://github.com/jaakkopasanen/AutoEq) project, import [EqualizerAPO](https://sourceforge.net/projects/equalizerapo/) profiles, or browse [autoeq.app](https://www.autoeq.app/)
-- **[URL Schemes](guide/url-schemes.md)** — Automate FineTune from Terminal, [Shortcuts](https://support.apple.com/guide/shortcuts-mac), [Raycast](https://raycast.com), or scripts
-- **[Troubleshooting](guide/troubleshooting.md)** — Permission issues, missing apps, audio problems
-
-## Contributing
-
-- **Star this repo** — Help others discover FineTune
-- **Report bugs** — [Open an issue](https://github.com/ronitsingh10/FineTune/issues)
-- **Contribute code** — See [CONTRIBUTING.md](CONTRIBUTING.md)
-
-### Build from Source
-
-```bash
-git clone https://github.com/ronitsingh10/FineTune.git
-cd FineTune
-open FineTune.xcodeproj
-```
-
-## Requirements
-
-- macOS 15.0 (Sequoia) or later
-- Audio capture permission (prompted on first launch)
-
-## Support
-
-FineTune is free and open source, forever. If it made your day a little easier, you can buy me a coffee — but genuinely not expected 🙏
-
-[![Buy me a coffee](https://img.shields.io/badge/Buy_me_a_coffee-FF5E5B?style=for-the-badge&logo=ko-fi&logoColor=white)](https://ko-fi.com/ronitsingh10)
-
-
-## License
-
-[GPL v3](LICENSE)
+Released under the [GNU General Public License v3.0 (GPL-3.0)](LICENSE).

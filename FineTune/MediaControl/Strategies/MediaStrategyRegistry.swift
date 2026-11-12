@@ -51,7 +51,7 @@ final class MediaStrategyRegistry {
         self.strategies = loadedByID.values.sorted {
             $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending
         }
-        logger.info("Loaded \(self.strategies.count) BeardedSpice media strategies")
+        logger.info("Loaded \(self.strategies.count) Universal Media media strategies")
     }
 
     /// Finds the best matching strategy for a browser tab.

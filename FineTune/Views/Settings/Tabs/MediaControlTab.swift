@@ -44,7 +44,7 @@ struct MediaControlTab: View {
     // MARK: - Media Keys & HUD
 
     private var mediaKeysSection: some View {
-        SettingsSection("Universal Media Keys (BeardedSpice)") {
+        SettingsSection("Universal Media Keys") {
             SettingsRow(
                 "Control Any Media Player with F7 / F8 / F9",
                 description: "Intercept Previous, Play/Pause, and Next keys so Apple Music never hijacks them, routing commands to active browser tabs (YouTube, SoundCloud, Twitch, etc.) and native players (Spotify, VLC, IINA, VOX, Tidal)"
@@ -144,16 +144,16 @@ struct MediaControlTab: View {
         }
     }
 
-    // MARK: - BeardedSpice Web Strategies
+    // MARK: - Web Media Strategies
 
     private var strategiesSection: some View {
         let totalCount = mediaController.strategyRegistry.strategies.count
         let enabledCount = totalCount - settings.appSettings.disabledMediaStrategies.count
 
-        return SettingsSection("BeardedSpice Web Strategies (\(enabledCount)/\(totalCount) Enabled)") {
+        return SettingsSection("Web Media Strategies (\(enabledCount)/\(totalCount) Enabled)") {
             SettingsRow(
                 "Custom Strategy (.js)",
-                description: "Import custom BeardedSpice .js strategy files or manage built-in web adapters"
+                description: "Import custom media strategy files or manage built-in web adapters"
             ) {
                 HStack(spacing: 8) {
                     Button("Import .js…") {
@@ -235,7 +235,7 @@ struct MediaControlTab: View {
 
     private func importCustomStrategyFile() {
         let panel = NSOpenPanel()
-        panel.title = "Import BeardedSpice Media Strategy (.js)"
+        panel.title = "Import Custom Media Strategy"
         panel.allowedContentTypes = [.javaScript, .sourceCode, .plainText]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false

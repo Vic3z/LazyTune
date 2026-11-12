@@ -4,7 +4,7 @@ import Foundation
 import MediaPlayer
 import os
 
-/// Central coordinator for BeardedSpice-style universal media key & web/native player control,
+/// Central coordinator for universal universal media key & web/native player control,
 /// supercharged with FineTune's CoreAudio real-time process audibility detection.
 @MainActor
 @Observable
@@ -155,7 +155,7 @@ final class MediaPlayerController {
 
     // MARK: - Target Discovery & Resolution
 
-    /// Scans running native media apps and open browser tabs matching BeardedSpice strategies
+    /// Scans running native media apps and open browser tabs matching Universal Media strategies
     /// or Universal HTML5 media, then selects the best active target.
     func refreshAvailableTargets() {
         let appSettings = settingsManager.appSettings
@@ -184,7 +184,7 @@ final class MediaPlayerController {
             discovered.append(adapter)
         }
 
-        // 2. Open browser tabs matching BeardedSpice strategies or Universal HTML5 fallback
+        // 2. Open browser tabs matching Universal Media strategies or Universal HTML5 fallback
         let browserTabs = BrowserTabAdapter.discoverMediaTabs(
             registry: strategyRegistry,
             disabledStrategyIDs: disabledIDs,
@@ -420,7 +420,7 @@ final class MediaPlayerController {
         presentActionHUD(for: target, actionSymbol: "heart.fill", statusText: "Favorited", delayMs: 200)
     }
 
-    /// BeardedSpice "Set Active Tab" — pins the frontmost browser tab or media app as the active target.
+    /// Universal Media "Set Active Tab" — pins the frontmost browser tab or media app as the active target.
     func setActiveTargetFromFrontmost() {
         refreshAvailableTargets()
         if let frontmost = availableTargets.first(where: { $0.isFrontmost() }) {
@@ -457,7 +457,7 @@ final class MediaPlayerController {
         }
     }
 
-    /// BeardedSpice "Bring Player to Front" — activates the browser window/tab or native player.
+    /// Universal Media "Bring Player to Front" — activates the browser window/tab or native player.
     func activatePlayingTarget() {
         if activeTarget == nil {
             refreshAvailableTargets()
@@ -651,7 +651,7 @@ final class MediaPlayerController {
         }
         var dict: [String: Any] = [
             MPMediaItemPropertyTitle: currentTrackInfo?.title ?? activeTarget?.displayName ?? "FineTune Media Control",
-            MPMediaItemPropertyArtist: currentTrackInfo?.artist ?? activeTarget?.subtitle ?? "BeardedSpice Universal Player",
+            MPMediaItemPropertyArtist: currentTrackInfo?.artist ?? activeTarget?.subtitle ?? "LazyTune Universal Player",
             MPNowPlayingInfoPropertyPlaybackRate: isPlayingState ? 1.0 : 0.0
         ]
         if let album = currentTrackInfo?.album, !album.isEmpty {
