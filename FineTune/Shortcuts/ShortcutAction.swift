@@ -11,6 +11,15 @@ enum ShortcutAction: String, CaseIterable, Codable, Sendable {
     case targetAppVolumeUp = "frontmostAppVolumeUp"
     case targetAppVolumeDown = "frontmostAppVolumeDown"
     case targetAppMuteToggle = "frontmostAppMuteToggle"
+    case mediaPlayPause = "mediaPlayPause"
+    case mediaNextTrack = "mediaNextTrack"
+    case mediaPreviousTrack = "mediaPreviousTrack"
+    case mediaSetActiveTab = "mediaSetActiveTab"
+    case mediaFavorite = "mediaFavorite"
+    case mediaShowTrackInfo = "mediaShowTrackInfo"
+    case mediaActivatePlayingTab = "mediaActivatePlayingTab"
+    case mediaSwitchPlayerNext = "mediaSwitchPlayerNext"
+    case mediaSwitchPlayerPrevious = "mediaSwitchPlayerPrevious"
 
     var displayName: String {
         switch self {
@@ -18,6 +27,15 @@ enum ShortcutAction: String, CaseIterable, Codable, Sendable {
         case .targetAppVolumeUp: "App Volume Up"
         case .targetAppVolumeDown: "App Volume Down"
         case .targetAppMuteToggle: "App Mute"
+        case .mediaPlayPause: "Media Play / Pause"
+        case .mediaNextTrack: "Media Next Track"
+        case .mediaPreviousTrack: "Media Previous Track"
+        case .mediaSetActiveTab: "Pin Active Browser Tab / Player"
+        case .mediaFavorite: "Favorite / Like Current Track"
+        case .mediaShowTrackInfo: "Show Track Info HUD"
+        case .mediaActivatePlayingTab: "Bring Active Player to Front"
+        case .mediaSwitchPlayerNext: "Switch to Next Media Player"
+        case .mediaSwitchPlayerPrevious: "Switch to Previous Media Player"
         }
     }
 
@@ -27,7 +45,11 @@ enum ShortcutAction: String, CaseIterable, Codable, Sendable {
     var supportsRepeat: Bool {
         switch self {
         case .targetAppVolumeUp, .targetAppVolumeDown: true
-        case .togglePopup, .targetAppMuteToggle: false
+        case .togglePopup, .targetAppMuteToggle,
+             .mediaPlayPause, .mediaNextTrack, .mediaPreviousTrack,
+             .mediaSetActiveTab, .mediaFavorite, .mediaShowTrackInfo,
+             .mediaActivatePlayingTab, .mediaSwitchPlayerNext, .mediaSwitchPlayerPrevious:
+            false
         }
     }
 }

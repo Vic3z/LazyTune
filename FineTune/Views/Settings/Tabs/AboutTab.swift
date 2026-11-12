@@ -28,9 +28,13 @@ struct AboutTab: View {
                     .interpolation(.high)
                     .frame(width: 96, height: 96)
 
-                Text("FineTune")
+                Text("LazyTune")
                     .font(.system(size: 22, weight: .semibold))
                     .foregroundStyle(DesignTokens.Colors.textPrimary)
+
+                Text("Unified Audio Mixer + BeardedSpice Media Control")
+                    .font(.system(size: 12))
+                    .foregroundStyle(.secondary)
 
                 Text("Version \(versionShort) (\(buildNumber))")
                     .font(.system(size: 12, design: .monospaced))
@@ -41,19 +45,12 @@ struct AboutTab: View {
 
             HStack(spacing: 8) {
                 AboutLinkChip(
-                    label: "Donate",
-                    icon: "heart.fill",
-                    hoverIcon: "heart.fill",
-                    hoverColor: .pink,
-                    url: DesignTokens.Links.support,
-                    isPrimary: true
-                )
-                AboutLinkChip(
-                    label: "Star on GitHub",
+                    label: "LazyTune on GitHub",
                     icon: "star",
                     hoverIcon: "star.fill",
                     hoverColor: .yellow,
-                    url: URL(string: "https://github.com/ronitsingh10/FineTune")!
+                    url: URL(string: "https://github.com/Vic3z/LazyTune")!,
+                    isPrimary: true
                 )
             }
 

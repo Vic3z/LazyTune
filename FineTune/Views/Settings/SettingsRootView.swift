@@ -10,10 +10,11 @@ struct SettingsRootView: View {
     @Bindable var mediaKeyStatus: MediaKeyStatus
     let mediaKeyMonitor: MediaKeyMonitor
     let shortcutsRegistry: ShortcutsRegistry
+    @Bindable var mediaController: MediaPlayerController
     @ObservedObject var updateManager: UpdateManager
 
     enum Section: String, Hashable, CaseIterable, Identifiable {
-        case general, audio, shortcuts, updates, about
+        case general, audio, media, shortcuts, about
         var id: Self { self }
     }
 
@@ -39,6 +40,16 @@ struct SettingsRootView: View {
             .tabItem { Label("Audio", systemImage: "speaker.wave.2") }
             .tag(Section.audio)
 
+            MediaControlTab(
+                settings: settings,
+                accessibility: accessibility,
+                mediaKeyStatus: mediaKeyStatus,
+                mediaKeyMonitor: mediaKeyMonitor,
+                mediaController: mediaController
+            )
+            .tabItem { Label("Media", systemImage: "play.circle") }
+            .tag(Section.media)
+
             ShortcutsTab(
                 settings: settings,
                 accessibility: accessibility,
@@ -49,10 +60,6 @@ struct SettingsRootView: View {
             .tabItem { Label("Shortcuts", systemImage: "command") }
             .tag(Section.shortcuts)
 
-            UpdatesTab(updateManager: updateManager)
-                .tabItem { Label("Updates", systemImage: "arrow.triangle.2.circlepath") }
-                .tag(Section.updates)
-
             AboutTab()
                 .tabItem { Label("About", systemImage: "info.circle") }
                 .tag(Section.about)
@@ -60,6 +67,6 @@ struct SettingsRootView: View {
         .frame(width: 720, height: 560)
         .preferredColorScheme(settings.appSettings.appearance.swiftUIColorScheme)
         .background(WindowAppearanceBridge(appearance: settings.appSettings.appearance.nsAppearance))
-        .background(WindowTitleBridge(title: "FineTune Settings"))
+        .background(WindowTitleBridge(title: "LazyTune Settings"))
     }
 }

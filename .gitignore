@@ -10,6 +10,8 @@ CLAUDE.md
 
 # Build artifacts
 build/
+.build_direct/
+.deps/
 DerivedData/
 tools/
 *.xcodeproj/xcuserdata/

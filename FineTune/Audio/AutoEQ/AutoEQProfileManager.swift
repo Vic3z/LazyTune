@@ -25,18 +25,25 @@ final class AutoEQProfileManager {
 
     /// Normalized names for fuzzy search (parallel array with sortedEntries).
     private var normalizedNames: [String] = []
+    private var hasTriggeredCatalogLoad = false
 
     init(loader: AutoEQProfileLoader = AutoEQProfileLoader(), fetcher: AutoEQFetcher? = nil) {
         self.loader = loader
         self.fetcher = fetcher ?? AutoEQFetcher()
+        // Lazy-loaded: the 6,028-entry AutoEQ catalog is only loaded on demand
+        // when the user opens the AutoEQ picker or resolves a saved headphone profile.
+    }
 
-        // Imported profiles are small — load synchronously
+    /// Lazily loads the AutoEQ catalog and imported profiles on first use.
+    func ensureCatalogLoaded() {
+        guard !hasTriggeredCatalogLoad else { return }
+        hasTriggeredCatalogLoad = true
+
         let imported = loader.loadImportedProfiles()
         for profile in imported {
             profiles[profile.id] = profile
         }
 
-        // Load catalog from cache/GitHub
         Task { @MainActor in
             await self.fetcher.loadCatalog()
             self.rebuildSearchIndex()
@@ -77,6 +84,17 @@ final class AutoEQProfileManager {
     func resolveProfile(for id: String) async -> AutoEQProfile? {
         // Already loaded (imported or previously fetched)
         if let existing = profiles[id] { return existing }
+
+        if !hasTriggeredCatalogLoad {
+            hasTriggeredCatalogLoad = true
+            let imported = loader.loadImportedProfiles()
+            for profile in imported {
+                profiles[profile.id] = profile
+            }
+            if let existing = profiles[id] { return existing }
+            await fetcher.loadCatalog()
+            rebuildSearchIndex()
+        }
 
         // Find catalog entry for this ID
         guard let entry = fetcher.catalog.first(where: { $0.id == id }) else { return nil }
@@ -136,6 +154,7 @@ final class AutoEQProfileManager {
 
     /// Fuzzy search across catalog entry names with relevance ranking.
     func search(query: String, limit: Int = 50) -> AutoEQSearchResult {
+        ensureCatalogLoaded()
         guard !query.isEmpty else { return AutoEQSearchResult(entries: [], totalCount: 0) }
 
         let loweredQuery = query.lowercased()

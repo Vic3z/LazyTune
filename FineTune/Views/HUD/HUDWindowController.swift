@@ -180,6 +180,67 @@ final class HUDWindowController: MediaKeyHUDPresenting {
         )
     }
 
+    func showMediaHUD(
+        track: MediaTrackInfo,
+        icon: NSImage?,
+        actionSymbol: String,
+        statusText: String?
+    ) {
+        showCallCount += 1
+        showDidUpdatePanel = false
+
+        guard !popupVisibility.isVisible else {
+            logger.debug("Skipping media HUD: popup is visible")
+            return
+        }
+
+        let appearance = settingsManager.appSettings.appearance
+        styleAtLastShow = .tahoe
+        let panel = ensurePanel()
+        panel.appearance = appearance.nsAppearance
+        panel.ignoresMouseEvents = true
+
+        let scheme = appearance.swiftUIColorScheme
+        let root = AnyView(
+            MediaTrackHUD(
+                icon: icon,
+                track: track,
+                actionSymbol: actionSymbol,
+                statusText: statusText
+            )
+            .preferredColorScheme(scheme)
+        )
+        let size = NSSize(width: 300, height: 72)
+
+        if let existing = hostingView {
+            existing.rootView = root
+        } else {
+            let hv = NSHostingView(rootView: root)
+            hv.frame = NSRect(origin: .zero, size: size)
+            panel.contentView = hv
+            hostingView = hv
+        }
+        showDidUpdatePanel = true
+
+        panel.setContentSize(size)
+        panel.setFrameOrigin(position(for: .tahoe, size: size))
+
+        if panel.isVisible {
+            panel.orderFrontRegardless()
+        } else {
+            panel.alphaValue = 0
+            panel.orderFrontRegardless()
+            let duration = reduceMotionEnabled() ? 0.08 : 0.12
+            NSAnimationContext.runAnimationGroup { ctx in
+                ctx.duration = duration
+                ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                panel.animator().alphaValue = 1.0
+            }
+        }
+
+        scheduleHide(for: .tahoe)
+    }
+
     /// Hotkey-triggered per-app HUDs bypass the fullscreen guard because the user explicitly invoked them.
     private func presentPerApp(icon: NSImage?, title: String, content: PerAppHUDContent) {
         showCallCount += 1
@@ -604,6 +665,75 @@ private struct PerAppHUD: View {
             .frame(maxHeight: .infinity)
         }
         .frame(height: Self.barHeight + 8)
+    }
+}
+
+private struct MediaTrackHUD: View {
+    let icon: NSImage?
+    let track: MediaTrackInfo
+    let actionSymbol: String
+    let statusText: String?
+
+    private static let frameWidth: CGFloat = 300
+    private static let frameHeight: CGFloat = 72
+    private static let cornerRadius: CGFloat = 22
+    private static let iconSize: CGFloat = 28
+
+    private var subtitleLine: String {
+        let sub = track.subtitleLine
+        if !sub.isEmpty { return sub }
+        return statusText ?? ""
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            if let icon {
+                Image(nsImage: icon)
+                    .resizable()
+                    .interpolation(.high)
+                    .frame(width: Self.iconSize, height: Self.iconSize)
+            } else {
+                Image(systemName: "music.quarternote.3")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(DesignTokens.Colors.textSecondary)
+                    .frame(width: Self.iconSize, height: Self.iconSize)
+            }
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text(track.title)
+                    .font(TahoeStyleHUD.nameFont)
+                    .foregroundStyle(DesignTokens.Colors.textPrimary)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                HStack(spacing: 6) {
+                    Image(systemName: actionSymbol)
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(DesignTokens.Colors.hudTileActive)
+                    Text(subtitleLine)
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(DesignTokens.Colors.textSecondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                    Spacer(minLength: 0)
+                }
+            }
+        }
+        .padding(.horizontal, 14)
+        .padding(.top, 14)
+        .padding(.bottom, 12)
+        .frame(width: Self.frameWidth, height: Self.frameHeight)
+        .background {
+            RoundedRectangle(cornerRadius: Self.cornerRadius)
+                .fill(.regularMaterial)
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: Self.cornerRadius)
+                .strokeBorder(DesignTokens.Colors.hudBorder, lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(track.title), \(subtitleLine)")
     }
 }
 

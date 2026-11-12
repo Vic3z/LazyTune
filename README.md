@@ -1,10 +1,8 @@
-<img src="assets/icon.png" width="170" height="170" alt="FineTune app icon" align="left"/>
+<img src="assets/icon.png" width="170" height="170" alt="LazyTune app icon" align="left"/>
 
-<h3>FineTune</h3>
+<h3>LazyTune (Lazy Tune)</h3>
 
-Control the volume of every app independently, boost quiet ones up to 4x, route audio to different speakers, and shape your sound with EQ and headphone correction. Lives in your menu bar. Free and open-source.
-
-<a href="https://github.com/ronitsingh10/FineTune/releases/latest/download/FineTune.dmg"><img src="assets/download-badge.svg" alt="Download for macOS" height="48"/></a>
+Unified macOS audio mixer + **BeardedSpice** universal media key controller (`F7` / `F8` / `F9`). Control the volume of every app independently, route audio to different speakers, and control playback across Spotify, YouTube, SoundCloud, Twitch, Safari, Chrome, Brave, Arc, VLC, IINA, and 100+ web players from a single ultra-lightweight menu bar app (`~50 MB` RAM, `0.0%` idle CPU, lazy-loaded EQ, zero background update checks).
 
 <br clear="all"/>
 

@@ -1,0 +1,1849 @@
+[
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*music.amazon.*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Amazon Music",
+    "favoriteScript" : "",
+    "fileName" : "AmazonMusic.js",
+    "id" : "AmazonMusic",
+    "isPlayingScript" : "(function(){ try { return (function () {return window.amznMusic.widgets.player.isPlaying();})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return window.amznMusic.widgets.player.playHash('next')})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {window.amznMusic.widgets.player.pause();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return window.amznMusic.widgets.player.playHash('previous')})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return window.amznMusic.widgets.player.playHash('togglePlay')})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var data = window.amznMusic.widgets.player.getCurrent()['metadata'];\n    return {\n        'track': data['title'],\n        'artist': data['albumName'],\n        'album': data['artistName'],\n        'image': data['albumCoverImageSmall']\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*play.anghami.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Anghami",
+    "favoriteScript" : "(function(){ try { return (function () {\n        $(\".action.extras .icon-like\").click();\n    })(); } catch (e) { return null; } })()",
+    "fileName" : "Anghami.js",
+    "id" : "Anghami",
+    "isPlayingScript" : "(function(){ try { return (function () {\n        return ($(\".action.play .icon-pause\").length + $(\".action.play .loader\").length) > 0;\n    })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n        $('.action.next').click();\n    })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n        $(\".action.play .icon-pause\").click();\n    })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n        $('.action.previous').click();\n    })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n        $(\".action.play\").click();\n    })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        return {\n            'track': $(\"a.track-title\").text(),\n            'artist': $(\"a.track-artist\").text(),\n            'image': $(\".cover-art img\")[0].src,\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*developer.apple.com\/videos\/play\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Apple Developer",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "AppleDeveloper.js",
+    "id" : "AppleDeveloper",
+    "isPlayingScript" : "(function(){ try { return (function () {return !(document.querySelector('video').paused);})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.getElementsByTagName(\"video\")[0].pause();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var theVideo = document.getElementsByTagName(\"video\")[0];\n    if (theVideo.paused) { theVideo.play(); }\n    else { theVideo.pause() }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.getElementsByClassName(\"supplement details active\")[0].getElementsByTagName(\"h1\")[0].textContent,\n      'album': 'Apple'\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*audible.com\/cloud-player*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Audible",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Audible.js",
+    "id" : "Audible",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var p=document.querySelector('.pause');\n    return (p && !p.classList.contains('hide'));\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('.fav').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var p=document.querySelector('.pause');\n    if(p && !p.classList.contains('hide')){ p.click();}\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('.repeat').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('.play').click();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var art = document.querySelector('.item img');\n    var chapter = document.querySelector('.chapter');\n    var timeCur = document.querySelector('.cur');\n    var timeRem = document.querySelector('.rem');\n    return {\n      'image': art ? art.getAttribute('src') : null,\n      'track': chapter ? chapter.innerText : null,\n      'artist': (timeCur ? timeCur.innerText : null) + '\/' + (timeRem ? timeRem.innerText : null),\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*audiomack.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Audiomack",
+    "favoriteScript" : "(function(){ try { return (function () {\n        window.amPlayer.favorite();\n    })(); } catch (e) { return null; } })()",
+    "fileName" : "AudioMack.js",
+    "id" : "AudioMack",
+    "isPlayingScript" : "(function(){ try { return (function () {\n        return !window.amPlayer.paused();\n    })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n        window.amPlayer.next();\n    })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n        window.amPlayer.pause();\n    })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n        window.amPlayer.prev();\n    })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n        window.amPlayer.paused() ? window.amPlayer.play() : window.amPlayer.pause();\n    })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        var info = window.amPlayer.info();\n        return {\n            'artist': info.artist,\n            'album': info.album,\n            'track': info.title,\n            'image': info.image,\n            'progress': info.progress,\n            'favorited': info.favorited\n        }\n    })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*bbc.co.uk\/radio\/player\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "BBC Radio",
+    "favoriteScript" : "(function(){ try { return (function () {document.querySelector('#toggle-mystations').click();})(); } catch (e) { return null; } })()",
+    "fileName" : "BBCRadio.js",
+    "id" : "BBCRadio",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var s=document.querySelector('#controls');\n    return (s && (s.classList.contains('stoppable') || s.classList.contains('pausable')));\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelector('#btn-pause').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var s = document.querySelector('#controls');\n    var play = document.querySelector('#btn-play');\n    var pause = document.querySelector('#btn-pause');\n    if (s && (s.classList.contains('stoppable') || s.classList.contains('pausable'))) {\n      pause.click();\n    } else {\n      play.click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var playlister=document.querySelector('.playlister'), art, title, artist;\n    if (playlister) {\n      art=document.querySelector('.playlister img'),\n      title=playlister.querySelector('.track .title'),\n      artist=playlister.querySelector('.track .artist');\n    } else {\n      art=document.querySelector('#main-image-wrapper img'),\n      title=document.querySelector('#parent-title a'),\n      artist=document.querySelector('#title a');\n    }\n    return {'image': art ? art.getAttribute('src') : null,\n            'track': title ? title.innerText : document.title,\n            'artist': artist ? artist.innerText : null\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*bbc.co.uk\/programmes\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "BBC Radio Programmes",
+    "favoriteScript" : "(function(){ try { return (function () { window.parent.document.querySelector('#pf1').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "BBCRadioProgrammes.js",
+    "id" : "BBCRadioProgrammes",
+    "isPlayingScript" : "(function(){ try { return (function () {\n  \tlet iframe = window.parent.document.querySelector('iframe[id^=\"smphtml5iframeepisode-playout-\"]');\n    return (iframe != null) && (iframe.contentDocument.querySelector('.p_pauseButton') != null);\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { window.parent.document.querySelector('.istats--more-panel-play-next a').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n  \tlet iframe = window.parent.document.querySelector('iframe[id^=\"smphtml5iframeepisode-playout-\"]');\n\n    if (iframe != null) {\n      let pause = iframe.contentDocument.querySelector('.p_pauseButton');\n      if (pause != null) {\n        pause.click();\n      }\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { window.parent.document.querySelector('.istats--more-panel-play-previous a').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n  \tlet iframe = window.parent.document.querySelector('iframe[id^=\"smphtml5iframeepisode-playout-\"]');\n  \n    if (iframe != null) {\n      let play = iframe.contentDocument.querySelector('.p_playButton');\n      let pause = iframe.contentDocument.querySelector('.p_pauseButton');\n     \n      if (play != null) {\n        play.click();\n      } \n      else if (pause != null) {\n        pause.click();\n      }\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    let trackdiv = window.parent.document.querySelector('div.br-masthead__title > a');\n    let artistdiv = window.parent.document.querySelector(\"div.island > div > h1[property='name']\");\n    let albumdiv = window.parent.document.querySelector('.service-brand-logo-master');\n    let favoritediv = window.parent.document.querySelector('#pf1');\n\n    let iframe = window.parent.document.querySelector('iframe[id^=\"smphtml5iframeepisode-playout-\"]');\n    let imagediv = iframe != null ? iframe.contentDocument.querySelector('#mediaContainer') : null;\n    let timediv = iframe != null ? iframe.contentDocument.querySelector('.p_timeDisplay') : null;\n  \t\n    return {\n      'track': trackdiv ? trackdiv.text : null,\n      'artist': artistdiv ? artistdiv.innerText : null,\n      'album' : albumdiv ? albumdiv.innerText : null,\n      'image': imagediv ? imagediv.style.backgroundImage : null,\n      'favorited': favoritediv ? favoritediv.classList.contains(\"p-f-added\") : false,\n      'progress': timediv ? timediv.innerText.replace(\"\/\", \" \/ \") : \"- \/ -\"\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*be-at.tv*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "BE-AT.TV",
+    "favoriteScript" : "(function(){ try { return (function() {})(); } catch (e) { return null; } })()",
+    "fileName" : "BE-AT.TV.js",
+    "id" : "BE-AT.TV",
+    "isPlayingScript" : "(function(){ try { return (function() {\n    return document.querySelector('#radio .playbutton')\n      .style.display === 'none';\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function() {\n    document.querySelector('#radio .next').click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function() {\n    document.querySelector('#radio .pausebutton').click();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function() {\n    document.querySelector('#radio .back').click();\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function() {\n    var playButton = document.querySelector('#radio .playbutton');\n    var pauseButton = document.querySelector('#radio .pausebutton');\n\n    playButton.style.display === 'none' ? pauseButton.click() :\n      playButton.click();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function() {\n    \/\/ Ticker format: \"artist : track\"\n    var items = document.querySelector('#radio .ticker').textContent\n      .split(':', 2);\n\n    \/\/ Get the un-resized thumbnail by removing the ?w=36&h36 query\n    var imageUrl = document.querySelector('#radio img').src;\n    imageUrl = imageUrl.slice(0, imageUrl.indexOf('?'));\n\n    return {\n      artist: items[0].trim(),\n      track: items[1].trim(),\n      image: imageUrl\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*bandcamp.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "BandCamp",
+    "favoriteScript" : "",
+    "fileName" : "BandCamp.js",
+    "id" : "BandCamp",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {gplaylist.next_track()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {gplaylist.pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {gplaylist.prev_track()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {gplaylist.playpause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'artist': EmbedData.artist,\n      'album': EmbedData.album_title,\n      'track': gplaylist.get_track_info().title,\n      'image': document.getElementById('tralbumArt').children[0].href,\n      'progress': document.getElementsByClassName(\"time_elapsed\")[0].innerText + \" \/ \" + document.getElementsByClassName(\"time_total\")[0].innerText\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptScript" : "(function(){ try { return (function () {\n      return window.siteroot ? RegExp(\"https?:\/\/bandcamp\\.com\").test(window.siteroot) : false;\n    })(); } catch (e) { return null; } })()",
+    "acceptType" : "script",
+    "displayName" : "BandCampWhiteLabel",
+    "favoriteScript" : "",
+    "fileName" : "BandCampWhiteLabel.js",
+    "id" : "BandCampWhiteLabel",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {gplaylist.next_track()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {gplaylist.pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {gplaylist.prev_track()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {gplaylist.playpause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'artist': EmbedData.artist,\n      'album': EmbedData.album_title,\n      'track': gplaylist.get_track_info().title\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*beatguide.me*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Beatguide",
+    "favoriteScript" : "",
+    "fileName" : "Beatguide.js",
+    "id" : "Beatguide",
+    "isPlayingScript" : "(function(){ try { return (function () {return ($('.pause-icon').css('display') == 'block');})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelectorAll('.fa-forward')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return document.querySelectorAll('.fa-pause')[0].click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return document.querySelectorAll('.fa-backward')[0].click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return document.querySelectorAll('.play-icon')[0].click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelectorAll('.track-title')[0].innerText,\n      'artist': document.querySelectorAll('.artist-name')[0].innerText,\n      'image': document.querySelectorAll('.track-artwork')[0].src\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*beatport.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Beatport",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('.add-to-default').click();})(); } catch (e) { return null; } })()",
+    "fileName" : "Beatport.js",
+    "id" : "Beatport",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('.play-button.play') === null })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('.next-button').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('.play-button.pause').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('.prev-button').click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var play = document.querySelector('.play-button.play'),\n        pause = document.querySelector('.play-button.pause');\n    if (pause != null) { pause.click();} else { play.click();}\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var info = document.querySelectorAll('.track-artist a'),\n        artists = [];\n    for (i = 0; i < info.length; i++) { artists.push(info[i].innerText);}\n\n    artists = artists.filter(function(item, pos, self) {\n      return self.indexOf(item) == pos;\n    });\n    var track = document.querySelector('.primary-title').innerText +\n        ' ('+ document.querySelector('.remixed').innerText +')';\n\n    var artwork = document.querySelector('.track-artwork').getAttribute('src')\n                 .replace(\/[0-9]+x[0-9]+\/,'600x600');\n    return {\n      track: track,\n      \/\/album: album,\n      artist: artists.join(\", \"), \/\/(\" & \")\n      image: artwork,\n      favorited: document.querySelector('.buy-button.in-cart') != null\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*blitzr.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Blitzr",
+    "favoriteScript" : "",
+    "fileName" : "Blitzr.js",
+    "id" : "Blitzr",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('#blitzr_playpause span.fa').className.indexOf('fa-play') == -1 })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('#blitzr_next').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if (document.querySelector('#blitzr_playpause span.fa').className.indexOf('fa-play') == -1) {\n      document.querySelector('#blitzr_playpause').click()\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('#blitzr_prev').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('#blitzr_playpause').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('#playerTitle strong').innerText,\n      'album': document.querySelector('#playerInfo .media-left a').title,\n      'artist': document.querySelectorAll('#playerArtists')[0].querySelector('a').innerText,\n      'image': document.querySelector('#playerInfo .media-left a img').style['background-image'].slice(4, -1),\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*brain.fm\/app*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Brain.fm",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "BrainFm.js",
+    "id" : "BrainFm",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var p = document.querySelector('#play_button');\n    return p.classList.contains('tc_pause');\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelectorAll('#skip_button')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var p = document.querySelectorAll('#play_button')[0];\n    if(p.classList.contains('tc_pause')){\n      p.click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelectorAll('#play_button')[0].click();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function (){\n    return {\n      track: document.querySelector('#playing_title').textContent\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*music.bugs.co.kr\/newPlayer*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Bugs Music",
+    "favoriteScript" : "(function(){ try { return (function (){\n    if (document.querySelector('.btnLikeTrackCancel').style.display == \"none\") {\n      bugs.player.likeButtonHandler().call();\n    }\n    bugs.player.likeCancelButtonHandler().call();\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "BugsMusic.js",
+    "id" : "BugsMusic",
+    "isPlayingScript" : "(function(){ try { return (function () { return bugs.player.isPlayingTrack; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { bugs.player.nextButtonHandler().call(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if (bugs.player.isPlayingTrack) {\n      bugs.player.playButtonHandler().call();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { bugs.player.prevButtonHandler().call(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { bugs.player.playButtonHandler().call(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      image:  document.querySelector('.thumbnail > img').getAttribute('src'),\n      track:  bugs.player.getCurrentTrackInfo().track_title,\n      artist: bugs.player.getCurrentTrackInfo().artist_nm,\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "title"
+    ],
+    "acceptFormat" : "%K LIKE[c] '▶ * | Chorus.'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Chorus",
+    "favoriteScript" : "",
+    "fileName" : "Chorus.js",
+    "id" : "Chorus",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {return app.audioStreaming.getPlayer() === 'local' ? app.audioStreaming.next() : app.shellView.playerNext()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return app.audioStreaming.getPlayer() === 'local' ? app.audioStreaming.pause(): true })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return app.audioStreaming.getPlayer() === 'local' ? app.audioStreaming.prev() : app.shellView.playerPrev() })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return app.audioStreaming.getPlayer() === 'local' ? app.audioStreaming.togglePlay() : app.shellView.playerPlay() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*play.composed.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Composed",
+    "favoriteScript" : "",
+    "fileName" : "Composed.js",
+    "id" : "Composed",
+    "isPlayingScript" : "(function(){ try { return (function () {return document.querySelectorAll('.player-buttons__pause').length != 0})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-buttons__next')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-buttons__pause')[0].click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-buttons__previous')[0].click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-buttons button')[1].click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelectorAll('.player-controls__track')[0].title,\n      'artist': document.querySelectorAll('.player-controls__composer')[0].textContent,\n      'image': document.querySelectorAll('.player-controls__packshot img')[0].src\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*coursera.org*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Coursera",
+    "favoriteScript" : "",
+    "fileName" : "Coursera.js",
+    "id" : "Coursera",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var v = vjs(document.querySelectorAll('.video-js')[0].querySelector('video').id);\n    return ! v.paused();\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelectorAll('.c-item-side-nav-right .c-block-icon-link')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var v = vjs(document.querySelectorAll('.video-js')[0].querySelector('video').id);\n    v.pause();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return document.querySelectorAll('.c-item-side-nav-left .c-block-icon-link')[0].click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var v = vjs(document.querySelectorAll('.video-js')[0].querySelector('video').id);\n    if (v.paused()) {\n      v.play();\n    } else {\n      v.pause();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('.c-video-title').firstChild.nodeValue,\n      'artist': 'Coursera'\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*cozycloud.cc\/#apps\/cozy-music\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Cozy Cloud",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "CozyCloud.js",
+    "id" : "CozyCloud",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    iFrameDoc = document.querySelector('iframe').contentWindow.document;\n    return iFrameDoc.querySelector('#play svg use').href === '#pause-lg';\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    iFrameDoc = document.querySelector('iframe').contentWindow.document;\n    iFrameDoc.querySelector('#next').click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    iFrameDoc = document.querySelector('iframe').contentWindow.document;\n    iFrameDoc.querySelector('#prev').click();\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    iFrameDoc = document.querySelector('iframe').contentWindow.document;\n    iFrameDoc.querySelector('#play').click();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    iFrameDoc = document.querySelector('iframe').contentWindow.document;\n    return {\n      \/\/'image': '',\n      'track': iFrameDoc.querySelector('#track-list li.playing .song-column-cell').innerText,\n      'artist': iFrameDoc.querySelector('#track-list li.playing .artist-column-cell').innerText\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*deezer.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Deezer",
+    "favoriteScript" : "(function(){ try { return (function (){\n    document.querySelector('div.player-actions span.icon-love').click();\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "Deezer.js",
+    "id" : "Deezer",
+    "isPlayingScript" : "(function(){ try { return (function() {\n    return document.querySelector('.control-play .svg-icon').classList.contains('svg-icon-pause');\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    document.querySelector('.control-next').click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.control-play .svg-icon').classList.contains('svg-icon-pause')) {\n      document.querySelector('.control-play').click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    document.querySelector('.control-prev').click();\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    document.querySelector('.control-play').click();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      \"track\": document.querySelector('#player-cover .player-track-title .player-track-link').innerText,\n      \"artist\": document.querySelector('#player-cover .player-track-artist .player-track-link').innerText,\n      \"image\": document.querySelector('#player-cover img').src,\n      \"favorited\": document.querySelector('.player-actions button .icon-love').classList.contains('active')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*di.fm*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Digitally Imported",
+    "favoriteScript" : "(function(){ try { return (function () { $('.vote-btn.up').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "DigitallyImported.js",
+    "id" : "DigitallyImported",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var pause = $('#webplayer-region .controls .ico.icon-pause').get(0);\n    var spinner = $('#webplayer-region .controls .ico.icon-spinner3').get(0);\n    var sponsor = $('#webplayer-region .metadata-container .track-title .sponsor').get(0);\n    return pause ? true : (spinner && sponsor );\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "",
+    "pauseScript" : "(function(){ try { return (function () {\n    var pause = document.querySelectorAll('div.controls a')[0];\n    if(pause.classList.contains('icon-pause')){\n      pause.click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () { return document.querySelectorAll('div.controls a')[0].click() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var artistName = $('.artist-name').text();\n    var trackName = $('.track-name').text().replace(artistName, \"\");\n    if (artistName.length > 3) {\n        artistName = artistName.substring(0, artistName.length - 3);\n    }\n    return {\n      'artist': artistName,\n      'track': trackName.replace(\/\\s+\/, ''),\n      'favorited': ($('.icon-thumbs-up-filled').get(0) ? true : false),\n      'image': $('#webplayer-region .track-region .artwork img').attr('src')\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*egghead.io\/lessons*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Egghead.io",
+    "favoriteScript" : "",
+    "fileName" : "Eggheadio.js",
+    "id" : "Eggheadio",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    return document.querySelector(\"video\").paused;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var e = document.querySelector(\".nowPlaying\").nextSibling;\n    if(e){ e.childNodes[0].click(); }\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    document.querySelector(\"video\").pause();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    var e = document.querySelector(\".nowPlaying\").previousSibling;\n    if(e){ e.childNodes[0].click(); }\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var v = document.querySelector(\"video\");\n    v.paused ? v.play() : v.pause();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      \"track\": document.querySelector(\"meta[itemprop=name]\").getAttribute(\"content\"),\n      \"artist\": window.egh_page.data.instructor,\n      \"image\": document.querySelector(\"[class*='index__icon__'] > img\").src\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*8tracks.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "8tracks",
+    "favoriteScript" : "(function(){ try { return (function () {\n    var fav = document.querySelector('#now_playing a.fav');\n      if (fav !== null && fav !== undefined) fav.click()\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "EightTracks.js",
+    "id" : "EightTracks",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var pause = document.querySelector('#player_pause_button');\n    return pause !== null && pause !== undefined &&pause.style.display !== 'none';\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var skip = document.querySelector('#player_skip_button');\n      if (skip !== undefined && skip !== null) skip.click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var pause = document.querySelector('#player_pause_button');\n      if (pause !== null && pause !== undefined) pause.click()\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () {\n    var play = document.querySelector('#player_play_button');\n    var pause = document.querySelector('#player_pause_button');\n    var overlay = document.querySelector('#play_overlay');\n    if (play !== undefined && play !== null && play.style.display !== 'none') { play.click(); }\n    else if (pause !== undefined && pause !== null && pause.style.display !== 'none') { pause.click(); }\n    else if (overlay !== undefined) { overlay.click(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var nowPlaying = document.querySelector('#now_playing');\n    var titleArtist = nowPlaying.querySelector('.title_artist');\n    return {\n      'title':  titleArtist.querySelector('.t').textContent,\n      'artist': titleArtist.querySelector('.a').textContent,\n      'album':  nowPlaying.querySelector('.track_details .track_metadata .album .detail').textContent,\n      'favorited': nowPlaying.querySelector('a.fav').classList.contains('active'),\n      'image': document.querySelector('#mix_player_details a.thumb img').src,\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*fipradio.fr\/player*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Fip",
+    "favoriteScript" : "",
+    "fileName" : "Fip.js",
+    "id" : "Fip",
+    "isPlayingScript" : "(function(){ try { return (function () { return (document.querySelector('#player-controls .stop') !== null); })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('#player-controls button').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('#player-controls button').click();; })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'image': document.querySelector('.cover .picture').getAttribute('src'),\n      'track': document.querySelector('.infos .title').getAttribute('title'),\n      'artist': document.querySelector('.infos .author .name').getAttribute('title')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*focusatwill.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "focus@will",
+    "favoriteScript" : "",
+    "fileName" : "FocusAtWill.js",
+    "id" : "FocusAtWill",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('a.next').click() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('a.play').click() })(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('a.play').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*focusmusic.fm*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "focusmusic.fm",
+    "favoriteScript" : "(function(){ try { return (function () { \/* toggles favorite on\/off *\/})(); } catch (e) { return null; } })()",
+    "fileName" : "FocusMusicFM.js",
+    "id" : "FocusMusicFM",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector(\".fa-play-circle\").classList.contains('hidden'); })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { \n    document.querySelector(\".controls.next\").click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    document.querySelector(\".fa-pause-circle\").click();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    document.querySelector(\".controls.previous\").click();\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    if (document.querySelector(\".fa-play-circle\").classList.contains('hidden')) {\n      document.querySelector(\".fa-pause-circle\").click();\n    } else {\n      document.querySelector(\".fa-play-circle\").click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'track': document.querySelector(\".track-title\").innerText,\n        'artist': document.querySelector(\".artist\").innerText\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*gaana.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Gaana",
+    "favoriteScript" : "",
+    "fileName" : "Gaana.js",
+    "id" : "Gaana",
+    "isPlayingScript" : "(function(){ try { return (function () {return document.querySelectorAll(\".pause\").length > 0 })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelector(\".next\").click() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { return document.querySelector(\".pause\").click() })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return document.querySelector(\".prev\").click() })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return document.querySelector(\".playPause\").click() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'track': document.querySelector(\"#tx\").innerHTML.split(\/<span>\/)[0],\n        'artist': document.querySelector(\"#tx > span:nth-child(2) > a\").innerText,\n        'album': document.querySelector(\"#tx > span:nth-child(1) > a\").innerHTML.split(\/<span>\/)[0],\n        'image': document.querySelector(\".thumbHolder > img\").src\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*genie.co.kr\/player*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "GenieMusic",
+    "favoriteScript" : "(function(){ try { return (function () { fnPlayerLikeAct(); })(); } catch (e) { return null; } })()",
+    "fileName" : "GenieMusic.js",
+    "id" : "GenieMusic",
+    "isPlayingScript" : "(function(){ try { return (function () { return flowplayer().playing; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { fnPlayNext(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { flowplayer().pause(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { fnPlayPrev(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { flowplayer().toggle(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'track': document.getElementById(\"SongTitleArea\").textContent,\n        'album': document.getElementById(\"AlbumImgArea\").getElementsByTagName(\"img\")[0].getAttribute(\"alt\"),\n        'artist': document.getElementById(\"ArtistNameArea\").textContent,\n        'image': 'http:' + document.getElementById(\"AlbumImgArea\").getElementsByTagName(\"img\")[0].getAttribute(\"src\"),\n        'favorited': (document.getElementsByClassName(\"btn-like\")[0].className.indexOf(\"active\") > 0)\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*play.google.com\/music\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "GoogleMusic",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('paper-icon-button[data-rating=\"5\"]').click() })(); } catch (e) { return null; } })()",
+    "fileName" : "GoogleMusic.js",
+    "id" : "GoogleMusic",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var e = document.querySelector('[data-id=play-pause]');\n    return e.classList.contains('playing');\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('[data-id=forward]').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var e = document.querySelector('[data-id=play-pause]');\n    if(e.classList.contains('playing')){\n        e.click()\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('[data-id=rewind]').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('[data-id=play-pause]').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track':  document.getElementById('currently-playing-title').innerText,\n      'album':  document.getElementsByClassName('player-album')[0].innerText,\n      'artist': document.getElementById('player-artist').innerText,\n      'favorited': !document.querySelector('#playerSongInfo paper-icon-button[icon=\"sj:thumb-up-outline\"] svg.iron-icon > g').transform.baseVal.length,\n      'image':  document.getElementById('playerBarArt').getAttribute('src')\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*grooveshark.im*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Grooveshark",
+    "favoriteScript" : "(function(){ try { return (function () {return window.Grooveshark.favoriteCurrentSong()})(); } catch (e) { return null; } })()",
+    "fileName" : "GrooveShark.js",
+    "id" : "GrooveShark",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () { playNextSong(0); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { pause(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { playBackSong(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return window.Grooveshark.togglePlayPause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var data = window.Grooveshark.getCurrentSongStatus()[\"song\"];\n    return {\n      'track': data[\"songName\"],\n      'album': data[\"albumName\"],\n      'artist': data[\"artistName\"],\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*hotnewhiphop.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "HotNewHipHop",
+    "favoriteScript" : "",
+    "fileName" : "HotNewHipHop.js",
+    "id" : "HotNewHipHop",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.getElementById('jp_audio_0').paused; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {$(\".jp-next\").click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {$(\"#jquery_jplayer_playlist\").jPlayer(\"pause\");})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {$(\".jp-previous\").click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var player = document.getElementById('jp_audio_0');\n    if (player.paused) { player.play() }\n    else { player.pause() }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var album = $('.mixtape-info-title')[0].innerText;\n    var artist = $('.mixtape-info-artist')[0].innerText;\n    return {\n      'track': $('.jp-playlist-current .mixtape-trackTitle .display')[0].innerText,\n      'album': album.replace(\/\\s+\/, ''),\n      'artist': artist.replace(\/\\s+\/, ''),\n      'image': $('.mixtape-cover-img img')[0].getAttribute('src')\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*hungama.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Hungama",
+    "favoriteScript" : "",
+    "fileName" : "Hungama.js",
+    "id" : "Hungama",
+    "isPlayingScript" : "(function(){ try { return (function () {\n\t\tif(document.getElementsByClassName(\"jp-play\")[0].getAttribute(\"data-tooltip\") === \"Pause\"){\n\t\t\treturn true;\n\t\t}\n\t\telse{\n\t\t\treturn false;\n\t\t}\t\t  \n\t})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function() {\n\t\tdocument.getElementsByClassName(\"jp-next\")[0].click();\n\t})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function() {\n\t\tif(document.getElementsByClassName(\"jp-play\")[0].getAttribute(\"data-tooltip\") === \"Pause\")\n\t\t\tdocument.getElementsByClassName(\"jp-play\")[0].click();\n\t})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function() {\n\t\tdocument.getElementsByClassName(\"jp-previous\")[0].click();\n\t})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function(){\n\t\tdocument.getElementsByClassName(\"jp-play\")[0].click();\t\n\t})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function() {\n\t\treturn {\n\t\t\t'track': document.querySelector(\".jw-songName\").innerText,\n\t\t\t'album': document.querySelector(\".jw-songAlbum\").innerText,\n\t\t\t'image': document.querySelector(\".jw-albumThumb\").src\n\t\t}\n\t})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*hypem.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "HypeMachine",
+    "favoriteScript" : "(function(){ try { return (function (){return window.toggleFavoriteItem()})(); } catch (e) { return null; } })()",
+    "fileName" : "HypeMachine.js",
+    "id" : "HypeMachine",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {return window.nextTrack()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return window.currentPlayerObj[0].pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return window.prevTrack()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return window.togglePlay()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'artist': now_playing[0].text,\n      'track': now_playing[2].text\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*indieshuffle.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "IndieShuffle",
+    "favoriteScript" : "",
+    "fileName" : "IndieShuffle.js",
+    "id" : "IndieShuffle",
+    "isPlayingScript" : "(function(){ try { return (function () { !youtubePaused && sound.playing() })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { nextSong(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { sound.pause() \/* || FIXME (some kind of yt.pause) *\/})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { previousSong(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { togglePlayPause(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var song = playerObj.currentSong;\n    return {\n      'image': song.artwork,\n      'track': song.title,\n      'artist': song.artist\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*jango.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Jango",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Jango.js",
+    "id" : "Jango",
+    "isPlayingScript" : "(function(){ try { return (function () { return (document.querySelector('#btn-playpause.pause') != null);})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('a#btn-ff').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var e = document.querySelector('a#btn-playpause.pause');\n    if(e != null) { e.click(); }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('a#btn-playpause').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': $('#current-song')[0].innerText,\n      'artist': $('#player_current_artist a')[0].innerText,\n      'favorited': false,\n      'image': $('#player_main_pic_img').attr('src')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*kcrw.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "KCRW",
+    "favoriteScript" : "(function(){ try { return (function () { \/* toggles favorite on\/off *\/ })(); } catch (e) { return null; } })()",
+    "fileName" : "KCRW.js",
+    "id" : "KCRW",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('#player_start_stop').classList.contains('active'); })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { return document.querySelectorAll('#player_fwd')[0].click() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { return document.querySelectorAll('#player_start_stop')[0].click() })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { return document.querySelectorAll('#player_back')[0].click() })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { return document.querySelectorAll('#player_start_stop')[0].click() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var meta = document.querySelector('a.playbackSoundBadge__title.sc-truncate');\n    return {\n      'track': document.querySelector('#player_subtitle>em').innerText.replace(\/['\"]+\/g, ''),\n      'artist': document.getElementById(\"player_subtitle\").childNodes[0],\n      'album': document.querySelector('#player_main_title').innerText\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*kollekt.fm*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Kollekt.FM",
+    "favoriteScript" : "(function(){ try { return (function() { $( \"i[ng-click='favoriteTrack(activeTrack())']\" ).click; })(); } catch (e) { return null; } })()",
+    "fileName" : "KollektFm.js",
+    "id" : "KollektFm",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function() { $( \"i[ng-click='next()']\" ).click; })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function() { $( \".fa-pause\" ).click; })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function() { $( \"i[ng-click='previous()']\" ).click; })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function() { $( \"i[ng-click='playPause()']\" ).click; })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*laracasts.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Laracasts",
+    "favoriteScript" : "(function(){ try { return (function () { \/* toggles favorite on\/off *\/})(); } catch (e) { return null; } })()",
+    "fileName" : "Laracasts.js",
+    "id" : "Laracasts",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('.vjs-play-control.vjs-playing') !== null; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { \/* switch to next track if any *\/ })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('.vjs-play-control.vjs-playing').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { \/* switch to previous track if any *\/ })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    document.querySelector('.vjs-play-control').click();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*last.fm\/listen*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "LastFM",
+    "favoriteScript" : "",
+    "fileName" : "LastFm.js",
+    "id" : "LastFm",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelectorAll('#radioControlSkip')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {var t=document.querySelectorAll('#radioControlPause')[0].click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () {\n    var e = document.querySelectorAll('#radioControlPlay')[0];\n    var t = document.querySelectorAll('#radioControlPause')[0];\n    var m = document.querySelectorAll('#webRadio')[0];\n    if(m.classList.contains('paused')) { e.click() }\n    else { t.click() }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*letournedisque.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "LeTournedisque",
+    "favoriteScript" : "",
+    "fileName" : "LeTournedisque.js",
+    "id" : "LeTournedisque",
+    "isPlayingScript" : "(function(){ try { return (function () {return (document.querySelectorAll('.playing')[0]) ? true : false})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelectorAll('div.next')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return document.querySelectorAll('div.playing')[0].click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return document.querySelectorAll('div.prev')[0].click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return document.querySelectorAll('div.play')[0].click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'artist': $('.info-text .artiste strong, .info-text .artiste a').text(),\n      'track': $.trim($('.info-text .name').text())\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] 'https:\/\/listen.moe*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Listen.moe",
+    "favoriteScript" : "",
+    "fileName" : "ListenMoe.js",
+    "id" : "ListenMoe",
+    "isPlayingScript" : "(function(){ try { return (function () { return (document.querySelector('#pause') !== null); })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('.player-button').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('.player-button').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var titleText = document.querySelector('.title').innerText.split(\/ - (.+)\/);\n    return {\n      'image': null,\n      'artist': titleText[0],\n      'track': titleText[1]\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*listenonrepeat.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "ListenOnRepeat",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('mdi-action-favorite-outline').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "ListenOnRepeat.js",
+    "id" : "ListenOnRepeat",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('i.mdi-av-pause') == null; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { return document.querySelector('i.mdi-av-skip-next').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('i.mdi-av-pause').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { return document.querySelector('i.mdi-av-skip-previous').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { return document.querySelector('div.control-play-pause').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function() {\n    return {\n        'track': document.querySelector('div.video-title').innerHTML,\n        'favorite': document.querySelector('div.control-heart > i:nth-child(1)').getAttribute(\"title\").indexOf(\"Add\") == -1\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*lp.anzi.kr*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Listeners Playlist (lp.anzi.kr)",
+    "favoriteScript" : "",
+    "fileName" : "ListenersPlaylist.js",
+    "id" : "ListenersPlaylist",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    document.querySelector('.svg_pause').getAttribute('style').indexOf('opacity: 1') > -1;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    document.querySelector('.svg_next').click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    document.querySelector('.svg_pause').click();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    document.querySelector('.svg_prev').click();\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.svg_pause').getAttribute('style').indexOf('opacity: 1') > -1) {\n      document.querySelector('.svg_pause').click();\n    } else {\n      document.querySelector('.svg_play').click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('.mainthumb_wrapper .info .title').innerText,\n      'artist': document.querySelector('.mainthumb_wrapper .info .artist').innerText,\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "title"
+    ],
+    "acceptFormat" : "%K LIKE[c] 'Logitech Media Server'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Logitech Media Server",
+    "favoriteScript" : "",
+    "fileName" : "LogitechMediaServer.js",
+    "id" : "LogitechMediaServer",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelectorAll('#ctrlNext button')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return window.SqueezeJS.Controller.playerControl(['pause'])})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return document.querySelectorAll('#ctrlPrevious button')[0].click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return window.SqueezeJS.Controller.togglePause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*www.lynda.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Lynda",
+    "favoriteScript" : "",
+    "fileName" : "Lynda.js",
+    "id" : "Lynda",
+    "isPlayingScript" : "(function(){ try { return (function () {return document.querySelector('button#player-playpause').title.includes(\"Pause\")})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('button#player-next').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {var button = document.querySelector('button#player-playpause'); if (button.title.includes(\"Pause\")) button.click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('button#player-previous').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('button#player-playpause').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('h1.default-title').innerText,\n      'album': document.querySelector('a.headline-course-title').innerText,\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "title"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*Madsonic*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Madsonic",
+    "favoriteScript" : "(function(){ try { return (function () {\n        parent.frames.playQueue.document.querySelector('#starred_off').click();\n    })(); } catch (e) { return null; } })()",
+    "fileName" : "Madsonic.js",
+    "id" : "Madsonic",
+    "isPlayingScript" : "(function(){ try { return (function () {\n        var is_playing = parent.frames.playQueue.document.querySelector('#startButton').style.display === \"none\";\n        return is_playing;\n    })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n        parent.frames.playQueue.document.querySelector('#nextButton').click();\n    })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n        parent.frames.playQueue.document.querySelector('#stopButton').click();\n    })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n        parent.frames.playQueue.document.querySelector('#previousButton').click();\n    })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n        var is_playing = parent.frames.playQueue.document.querySelector('#startButton').style.display === \"none\";\n        if (is_playing) {\n            parent.frames.playQueue.document.querySelector('#stopButton').click();\n        } else {\n            parent.frames.playQueue.document.querySelector('#startButton').click();\n        }\n    })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        frame = parent.frames.playQueue;\n        return {\n            'track': frame.document.querySelector('#songName').innerText,\n            'artist': frame.document.querySelector('#artistName').textContent,\n            'favorited': frame.parent.frames.playQueue.document.querySelector('#starred_on').style.display === \"none\",\n            'image': frame.document.querySelector('#coverArt').src,\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*www.mixcloud.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Mixcloud",
+    "favoriteScript" : "",
+    "fileName" : "MixCloud.js",
+    "id" : "MixCloud",
+    "isPlayingScript" : "(function(){ try { return (function() {return (document.querySelector('.player-control.pause-state') != null)})(); } catch (e) { return null; } })()",
+    "nextScript" : "",
+    "pauseScript" : "(function(){ try { return (function () { var aButton = document.querySelector('.player-control.pause-state'); if(aButton) aButton.click() })(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('.player-control').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('.player-cloudcast-title').text,\n      'artist': document.querySelector('.player-cloudcast-author-link').text,\n      'image' : document.querySelector('div.player img.loaded').getAttribute('src')\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*musicforprogramming.net\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "MusicForProgramming",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "MusicForProgramming.js",
+    "id" : "MusicForProgramming",
+    "isPlayingScript" : "(function(){ try { return (function () {return ( (document.querySelector('.playerControls #player_playpause').innerText === '[PAUSE]'));})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('.playerControls #player_ffw').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var playPause=document.querySelector('.playerControls #player_playpause');\n    if(playPause && playPause.innerText === '[PAUSE]'){\n        playPause.click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('.playerControls #player_rew').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('.playerControls #player_playpause').click();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var track=document.querySelector('.selected');\n    return {\n        'track': track ? track.innerText : ''\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*music.sonyentertainmentnetwork.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "MusicUnlimited",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('#PlayerLike').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "MusicUnlimited.js",
+    "id" : "MusicUnlimited",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('#PlayerNext').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('#PlayerPrevious').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('#PlayerPlayPause').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*npr.org*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "NPR",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "NPR.js",
+    "id" : "NPR",
+    "isPlayingScript" : "(function(){ try { return (function () {\n        var e = document.querySelector('.player-basic');\n        return e.classList.contains('is-playing');\n    })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('.player-skip').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n        var e = document.querySelector('.player-basic');\n        if(e.classList.contains('is-playing')){\n            e.click()\n        }\n    })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('.player-rewind').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n        document.querySelector('.player-play-pause-stop').click()\n    })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        return {\n            \/\/ @TODO\n            \/\/ this splits on commas, so it would fail if the names had comma in them, might be better to\n            \/\/ split based on quotes\n            'track':  document.querySelector('.item-current h2').innerText.split(',')[1].replace(\/\\\"\/g,''),\n            'album':  document.querySelector('.list-header__rest h3').innerText.split(',')[1].replace(\/\\'\/g,''),\n            'artist': document.querySelector('.item-current h2').innerText.split(',')[0],\n            \/\/@TODO - make this more sane\n            'image':  document.querySelector('.playlistwrap.album').children[0].children[0].children[0].children[0].getAttribute('src')\n        }\n    })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*one.npr.org*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "NPR One",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "NPROne.js",
+    "id" : "NPROne",
+    "isPlayingScript" : "(function(){ try { return (function () { return !$('audio')[0].paused; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { $('skip button').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { $('audio')[0].pause() })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { $('rewind button').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var audio = $('audio')[0];\n    if (audio.paused) {\n      audio.play();\n    } else {\n      audio.pause();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var audio = $('audio')[0];\n    return {\n        'track': $('.card__title:first').text(),\n        'artist': 'NPR One'\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*radio.nrk.no*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "NRK",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "NRK.js",
+    "id" : "NRK",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return window.nrk.modules.player.getApi().pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return window.nrk.modules.player.getApi().toggleplay()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function() {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*app.napster.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Napster",
+    "favoriteScript" : "(function(){ try { return (function () {$('.favorite-button').click()})(); } catch (e) { return null; } })()",
+    "fileName" : "Napster.js",
+    "id" : "Napster",
+    "isPlayingScript" : "(function(){ try { return (function () {return !!$('.player-play-button .icon-pause2').length;})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {$('.player-advance-button').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {$('.player-play-button .icon-pause2').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {$('.player-rewind-button').click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    if ($('.player-play-button .icon-pause2').length) {\n      $('.player-play-button .icon-pause2').click();\n    } else {\n      $('.player-play-button .icon-play-button').click()\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    function titleize(slug) {\n      var words = slug.split('-');\n      return words.map(function(word) {\n        return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();\n      }).join(' ');\n    }\n    return {\n      'track': $('.player-track a')[0].innerText,\n      'artist': ($('.player-artist a')[0].innerText).split('- ').slice(1).join('- ').trim(),\n      'album': titleize($('.player-wrapper a').attr('href').split('album\/')[1]),\n      'image': $('.player-album-thumbnail img')[0].src\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*netflix.com\/watch\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Netflix",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Netflix.js",
+    "id" : "Netflix",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var v=document.querySelector('video');\n    if (v) {v.paused ? v.play() : v.pause();}\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var v=document.querySelector('video');\n    v && v.pause();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var v=document.querySelector('video');\n    if (v) {v.paused ? v.play() : v.pause();}\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var track=document.querySelector('.player-status-main-title');\n    return {\n      'track': track ? track.innerText : ''\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*noadradio.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "NoAdRadio",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "NoAdRadio.js",
+    "id" : "NoAdRadio",
+    "isPlayingScript" : "(function(){ try { return (function () { return (document.querySelector('#btn-playpause.pause') != null);})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('a#btn-ff').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var e = document.querySelector('a#btn-playpause.pause');\n    if(e != null) { e.click(); }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('a#btn-playpause').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'track': $('#current-song')[0].innerText,\n        'artist': $('#player_current_artist a')[0].innerText,\n        'favorited': false,\n        'image': $('#player_main_pic_img').attr('src')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*noonpacific.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Noon Pacific",
+    "favoriteScript" : "",
+    "fileName" : "NoonPacific.js",
+    "id" : "NoonPacific",
+    "isPlayingScript" : "(function(){ try { return (function() { return document.querySelector('.fa-pause') ? true:false;})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelector('.fa-forward').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return document.querySelector('.fa-pause').click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return document.querySelector('.fa-backward').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return document.querySelectorAll('.fa-fw')[1].click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var track = document.querySelectorAll('.track-info div p');\n    var imgSrc = document.querySelector('.mixtape-container img.mixtape').getAttribute('src');\n    var album = document.querySelector('.mixtape-container div.mixtape-label h3').innerText;\n    return {\n      'track':track[0].firstChild.nodeValue,\n      'artist':track[1].firstChild.nodeValue,\n      'album':album,\n      'image':imgSrc\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL",
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*ok.ru*' OR %@ LIKE[c] '*odnoklassniki.ru*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Odnoklassniki",
+    "favoriteScript" : "",
+    "fileName" : "Odnoklassniki.js",
+    "id" : "Odnoklassniki",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () { __getMusicFlash().lcNext() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { __getMusicFlash().lcPause(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { __getMusicFlash().lcPrev() })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    if (odklMusic.playingTrack() == \"\") {\n      if (window['__getMusicFlash']) {\n        __getMusicFlash().lcResume()\n      } else {\n        odklMusic.openAndLaunchMusicPlaying();\n      }\n    } else {\n      __getMusicFlash().lcPause();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('#mmpcw .mus_player_song').firstChild.nodeValue,\n      'artist': document.querySelector('#mmpcw .mus_player_artist').firstChild.nodeValue\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*overcast.fm*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Overcast.fm",
+    "favoriteScript" : "",
+    "fileName" : "Overcast.js",
+    "id" : "Overcast",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var p=document.querySelector('#playpausebutton_playicon');\n    return (p && p.style.display==='none');\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.getElementById('seekforwardbutton').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var p=document.querySelector('#playpausebutton_playicon');\n    if(p && p.style.display==='none'){\n      document.getElementById('playpausebutton').click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.getElementById('seekbackbutton').click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.getElementById('playpausebutton').click();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var artist=document.querySelector('.caption2 a');\n    var track=document.querySelector('.title');\n    var art=document.querySelector('.art.fullart');\n    return {\n      'artist': artist ? artist.innerText : null,\n      'track': track ? track.innerText : null,\n      'image': art ? art.getAttribute('src') : null\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*pakartot.lt*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Pakartot",
+    "favoriteScript" : "(function(){ try { return (function () { $('.jp-love').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "Pakartot.js",
+    "id" : "Pakartot",
+    "isPlayingScript" : "(function(){ try { return (function () { !$('#playernode').data().jPlayer.status.paused; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { $('.jp-next').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { $('#playernode').jPlayer('pause'); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { $('.jp-previous').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var action = $('#playernode').data().jPlayer.status.paused ? 'play' : 'pause';\n    $('#playernode').jPlayer(action);\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var album = $('.main-title div').map(function(key, value){\n      return $(value).text().trim();\n    });\n    return {\n        'track': $('.jp-player-title').text().trim(),\n        'album': album.length > 0 ? album[0] : '',\n        'artist': album.length > 1 ? album[1] : '',\n        'favorited': $('.jp-love').hasClass('on'),\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*pandora.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Pandora",
+    "favoriteScript" : "(function(){ try { return (function () {\n    document.querySelector('.Tuner__Controls') !== null ?\n    document.querySelector('.Tuner__Control__ThumbUp__Button').click() :\n    document.querySelector('.thumbUpButton').click();\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "Pandora.js",
+    "id" : "Pandora",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.Tuner__Controls') !== null) {\n      return\n        document\n          .querySelector('.Tuner__Control__Play__Button')\n          .attributes['data-qa']\n          .value === 'pause_button';\n    } else {\n      return document.querySelector('.pauseButton').style.display === 'block';\n    }\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    document.querySelector('.Tuner__Controls') !== null ?\n    document.querySelector('.Tuner__Control__Skip__Button').click() :\n    document.querySelector('.skipButton').click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if(document.querySelector('.Tuner__Controls') !== null) {\n      var playPauseButton = document.querySelector('.Tuner__Control__Play__Button');\n      if (playPauseButton.attributes['data-qa'].value === 'pause_button') {\n        playPauseButton.click()\n      }\n    } else {\n    document.querySelector('.pauseButton').click();}\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.Tuner__Controls') !== null) {\n      document.querySelector('.Tuner__Control__Play__Button').click();\n    } else {\n      var playButton = document.querySelector('.playButton');\n      var pauseButton = document.querySelector('.pauseButton');\n      if (playButton.style.display==='block') { playButton.click() }\n      else { pauseButton.click() }\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.Tuner__Controls') !== null) {\n      return {\n        'track': document\n                   .querySelector('div.Tuner__Audio__TrackDetail__title')\n                   .innerText,\n        'artist': document\n                    .querySelector('div.Tuner__Audio__TrackDetail__artist')\n                    .innerText,\n        'album': document\n                   .querySelector('.nowPlayingTopInfo__current__albumName')\n                   .innerText,\n        'image': document\n                   .querySelector('[data-qa=album_active_image]')\n                   .style['background-image']\n                   .slice(5, -2),\n        'favorited': document\n                       .querySelector('[data-qa=thumbs_up_button]')\n                       .classList.contains('ThumbUpButton--active')\n      };\n    } else {\n      return {\n        'track': document.querySelector('.playerBarSong').innerText,\n        'artist': document.querySelector('.playerBarArtist').innerText,\n        'album': document.querySelector('.playerBarAlbum').innerText,\n        'image': document.querySelector('.playerBarArt').src,\n        'favorited': document\n                       .querySelector('div.thumbUpButton')\n                       .classList.contains('indicator')\n      };\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 5
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*phish.in*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "PhishIn",
+    "favoriteScript" : "",
+    "fileName" : "PhishIn.js",
+    "id" : "PhishIn",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('#control_playpause.playing') !== null; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('#control_next').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('#control_playpause.playing').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('#control_previous').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('#control_playpause').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        return {\n            'track': document.querySelector('#player_title').innerText,\n            'album': document.querySelector('#player_detail').innerText,\n            'artist': 'Phish'\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*phishtracks.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "PhishTracks",
+    "favoriteScript" : "",
+    "fileName" : "PhishTracks.js",
+    "id" : "PhishTracks",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.querySelector('#playBtn span.pause') !== null; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector(\"[data-control='next']\").click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { if(isPlaying()) { document.querySelector('#playBtn').click(); } })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector(\"[data-control='prev']\").click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('#playBtn').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        return {\n            'image': document.querySelector('meta[property=\"og:image\"]').getAttribute('content'),\n            'track': document.querySelector('#player h2 a').text,\n            'album': document.querySelector('#player h3 a').text,\n            'artist': 'Phish'\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*pinchyandfriends.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "PinchyDon",
+    "favoriteScript" : "",
+    "fileName" : "PinchyDon.js",
+    "id" : "PinchyDon",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    return !document.querySelector(\"audio\").paused;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "",
+    "pauseScript" : "(function(){ try { return (function () {\n    document.querySelector(\"audio\").pause();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "",
+    "toggleScript" : "(function(){ try { return (function () {\n    var a = document.querySelector(\"audio\");\n    a.paused ? a.play() : a.pause();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      \"track\": document.querySelector('.mixname_h1').textContent.split('by')[0].trim(),\n      \"artist\": document.querySelector('.mixname_h1').textContent.split('by')[1].trim(),\n      \"image\": document.querySelector(\"[class*='mix_img hand left'] > img\").src\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptScript" : "(function(){ try { return (function () {\n        return (window.PLEXWEB != undefined || document.querySelector('#plex') != null);\n    })(); } catch (e) { return null; } })()",
+    "acceptType" : "script",
+    "displayName" : "Plex Web",
+    "favoriteScript" : "",
+    "fileName" : "PlexWeb.js",
+    "id" : "PlexWeb",
+    "isPlayingScript" : "(function(){ try { return (function() {\n    var theButton = document.querySelector('.player.music .pause-btn');\n    if (theButton)\n      return !(theButton.classList.contains('hidden'));\n    else\n      return (document.querySelector('.video-player.playing') != undefined);\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var thePlayer = document.querySelector('.player.music') ? '.player.music' : '.video-player';\n    document.querySelector(thePlayer+' .next-btn').click()\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var thePlayer = document.querySelector('.player.music') ? '.player.music' : '.video-player';\n    document.querySelector(thePlayer + ' .pause-btn').click()\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    var thePlayer = document.querySelector('.player.music') ? '.player.music' : '.video-player';\n    document.querySelector(thePlayer+' .previous-btn').click()\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var thePlayer = document.querySelector('.player.music') ? '.player.music' : '.video-player';\n    var pauseButton = document.querySelector(thePlayer + ' .pause-btn');\n    var buttonIsHidden = pauseButton.classList.contains('hidden');\n    var toggleButton = document.querySelector('button' + (buttonIsHidden ? '.play' : '.pause') + '-btn');\n    toggleButton.click();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.player.music')) {\n      var mediaPoster = document.querySelector('.player.music .media-poster');\n      return {\n        'image': mediaPoster.getAttribute('data-image-url'),\n        'track': mediaPoster.getAttribute('data-title'),\n        'album': mediaPoster.getAttribute('data-image-title'),\n        'artist': document.querySelector('.player.music  .grandparent-title').innerText,\n        'favorited': (document.querySelector('.player.music .rating-container .user-rating') != undefined)\n      }\n    }\n    return {}\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*play.pocketcasts.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "PocketCasts",
+    "favoriteScript" : "",
+    "fileName" : "PocketCasts.js",
+    "id" : "PocketCasts",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('div.skip_forward_button').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelector('div.pause_button').click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector('div.skip_back_button').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('div.play_pause_button').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('div.player_top div.player_episode').innerText,\n      'album': document.querySelector('div.player_top div.player_podcast_title').innerText,\n      'image': document.querySelector('div.player_top div.player_artwork img').src,\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*poolside.fm*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Poolside FM",
+    "favoriteScript" : "",
+    "fileName" : "PoolsideFM.js",
+    "id" : "PoolsideFM",
+    "isPlayingScript" : "(function(){ try { return (function () {return document.querySelectorAll(\".play:not(.pause)\").length == 0 })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelector(\".skip\").click() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { return document.querySelector(\".pause\").click() })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {return true})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return document.querySelector(\".play\").click() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'track': document.querySelector(\".title\").innerText.trim().split(\"\\n\")[0],\n        'artist': document.querySelector(\".title\").innerText.trim().split(\"\\n\")[1],\n        'album': \"\", \/\/ No feature exists\n        'image': \"\"  \/\/ No feature exists\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*producthunt.com\/podcasts*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "ProductHunt",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('a[rel=save-button]').click() })(); } catch (e) { return null; } })()",
+    "fileName" : "ProductHunt.js",
+    "id" : "ProductHunt",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var canToggle = document.querySelector('span.player--button.v-toggle') != null;\n    if (canToggle)\n        return document.querySelector('span.player--button.v-toggle').getAttribute(\"data-reactid\").indexOf(\"play\") == -1;\n    return false;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('div.player--controls > span:nth-child(3)').click() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var doesPlayerExist = document.querySelector('body.m-player-active') != null;\n    var isPlaying = document.querySelector('span.player--button.v-toggle').getAttribute(\"data-reactid\").indexOf(\"play\") == -1;\n    if (doesPlayerExist && isPlaying)\n      document.querySelector('span.player--button.v-toggle').click();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('div.player--controls > span:nth-child(1)').click() })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('span.player--button.v-toggle').click() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('a.player--media--name').innerHTML,\n      'image': document.querySelector('a.player--media--coverart > img').getAttribute('src'),\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*player.qobuz.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Qobuz",
+    "favoriteScript" : "(function(){ try { return (function () {\n      if (qbPlayer.globalManager.isFavorite(\"track\", qbPlayer.playerManager.currentTrack.id)) {\n          qbPlayer.actionManager.triggerEvent(\"deleteFromFavorites\", {\n              type: \"track\",\n              ids: [qbPlayer.playerManager.currentTrack.id],\n              label: qbPlayer.playerManager.currentTrack.metadata.title});\n      }\n      else {\n          qbPlayer.actionManager.triggerEvent(\"addToFavorites\", {\n              type: \"track\",\n              ids: [qbPlayer.playerManager.currentTrack.id],\n              label: qbPlayer.playerManager.currentTrack.metadata.title});\n      }\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "Qobuz.js",
+    "id" : "Qobuz",
+    "isPlayingScript" : "(function(){ try { return (function () {return qbPlayer.playerManager.isPlaying();})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {qbPlayer.playerManager.next();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {if (qbPlayer.playerManager.isPlaying()) qbPlayer.playerManager.togglePause();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {qbPlayer.playerManager.previous();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {qbPlayer.playerManager.togglePause();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        track:  qbPlayer.playerManager.currentTrack.metadata.title,\n      artist: qbPlayer.playerManager.currentTrack.metadata.artistName,\n      album: qbPlayer.playerManager.currentTrack.metadata.albumTitle,\n      favorited: qbPlayer.globalManager.isFavorite(\"track\", qbPlayer.playerManager.currentTrack.id),\n      image: qbPlayer.playerManager.currentTrack.metadata.picture\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*rdio.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Rdio",
+    "favoriteScript" : "",
+    "fileName" : "Rdio.js",
+    "id" : "Rdio",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () {window.R.player.next()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {window.R.player.pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {window.R.player.previous()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {window.R.player.playPause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*reddit.musicplayer.io*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "RedditMusic",
+    "favoriteScript" : "",
+    "fileName" : "RedditMusic.js",
+    "id" : "RedditMusic",
+    "isPlayingScript" : "(function(){ try { return (function () { return !document.querySelector('#movie_player video').paused; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('.controls .item.forward.button').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('#movie_player video').pause(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('.controls .item.backward.button').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('.controls .item.play.button').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'image': document.querySelector('link[itemprop=thumbnailUrl]').getAttribute('href'),\n        'track': document.querySelector('meta[itemprop=name]').getAttribute('content'),\n        'artist': document.querySelector('.yt-user-info').innerText\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*saavn.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Saavn",
+    "favoriteScript" : "",
+    "fileName" : "Saavn.js",
+    "id" : "Saavn",
+    "isPlayingScript" : "(function(){ try { return (function () {\n  \treturn document.querySelector('#play').classList.contains('hide')\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.getElementById('fwd').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.getElementById('pause').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.getElementById('rew').click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var e = document.getElementById('play');\n    var t = document.getElementById('pause');\n    if (t.className.indexOf('hide')===-1) { t.click(); }\n    else { e.click(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var reg = \/(.*)(\\()(.*)(\\).*)\/;\n\n  \treturn {\n  \t  'track': document.querySelector('#player-track-name a').textContent,\n  \t  'album': document.querySelector('#player-album-name a').textContent,\n  \t  'image': document.querySelector('#now-playing .key-art').getAttribute('style').replace(reg, \"$3\").replace(\/\\\"\/g, \"\")\n\t}\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*shuffler.fm\/tracks*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Shuffler.fm",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "ShufflerFm.js",
+    "id" : "ShufflerFm",
+    "isPlayingScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {window.SHUFFLER.playerController.onAudioPlayerPlaybackEndHandler();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {window.SHUFFLER.audioPlayer.pause();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {SHUFFLER.playerController.onPlayerUiButtonPrevHandler();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var ap=window.SHUFFLER.audioPlayer;\n    if(ap.playing()) {\n      ap.pause();\n    } else {\n      ap.play();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*player.siriusxm.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "SiriusXM",
+    "favoriteScript" : "(function(){ try { return (function () {$('div.content-type-header--right > button.fav-icon').click();})(); } catch (e) { return null; } })()",
+    "fileName" : "SiriusXM.js",
+    "id" : "SiriusXM",
+    "isPlayingScript" : "(function(){ try { return (function () {$('.play span').hasClass('RegularPause');})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {$('.next span').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {if($('.play span').hasClass('RegularPause')) $('play span').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {$('.prev span').click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {$('.play span').click();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'track': $('div.line-two h2')[1].innerText,\n        'album': $('div.line-two h2')[0].innerText,\n        'artist': $('div.now-playing-channel-info button h1')[0].innerText,\n        'favorited': $('div.content-type-header--right > button.fav-icon').hasClass('RegularFav_B')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*slacker.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Slacker",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Slacker.js",
+    "id" : "Slacker",
+    "isPlayingScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {window.skip()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {window.PLAYER_ENGINE.pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {window.skipBack()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {window.playPause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*somafm.com\/player\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "SomaFM",
+    "favoriteScript" : "(function(){ try { return (function () {document.querySelector('.row.card').querySelector('button').click()})(); } catch (e) { return null; } })()",
+    "fileName" : "SomaFm.js",
+    "id" : "SomaFm",
+    "isPlayingScript" : "(function(){ try { return (function () {return ( (document.querySelector('#stopBtn:not(.ng-hide)') ? true : false));})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if(p=document.querySelector('#stopBtn:not(.ng-hide)')){\n      p.click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {(document.querySelector('#playBtn:not(.ng-hide)') || document.querySelector('#stopBtn:not(.ng-hide)')).click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var art = document.querySelector('.img-responsive').getAttribute('src');\n    var card = document.querySelector('.row.card').querySelectorAll('div');\n    return {\n      'track': card[1].firstChild.innerText,\n      'artist': card[2].firstChild.innerText,\n      'favorited': card[3].firstChild.className.indexOf('btn-fav') > -1,\n      'image': art\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*songza.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Songza",
+    "favoriteScript" : "(function(){ try { return (function () {document.querySelector('.miniplayer-info-playlist-favorite-status').click()})(); } catch (e) { return null; } })()",
+    "fileName" : "Songza.js",
+    "id" : "Songza",
+    "isPlayingScript" : "(function(){ try { return (function () {return document.querySelector('.player-wrapper').classList.contains('player-state-play');})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {return document.querySelector('.miniplayer-control-skip').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if (document.querySelector('.player-wrapper').classList.contains('player-state-play')) {\n      document.querySelector('.miniplayer-control-play-pause').click()\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelector('.miniplayer-control-play-pause').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var track = document.querySelector('.miniplayer-info-track-title > a').getAttribute('title');\n    var artist = document.querySelector('.miniplayer-info-artist-name > a').getAttribute('title');\n    var albumArt = document.querySelector('.miniplayer-album-art').getAttribute('src');\n    return {\n        'track': track,\n        'artist': artist,\n        'image': albumArt\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*soundcloud.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "SoundCloud",
+    "favoriteScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('div.playControls button.playbackSoundBadge__like, .playbackSoundBadge__like');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "SoundCloud.js",
+    "id" : "SoundCloud",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    if (navigator.mediaSession && navigator.mediaSession.playbackState === 'playing') return true;\n    var play = document.querySelector('.playControl, .playControls__play');\n    return play ? play.classList.contains('playing') : false;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('.skipControl__next');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var play = document.querySelector('.playControl, .playControls__play');\n    if (play && play.classList.contains('playing')) { play.click(); }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('.skipControl__previous');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('.playControl, .playControls__play');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var metaSession = (navigator.mediaSession && navigator.mediaSession.metadata) ? navigator.mediaSession.metadata : null;\n    var meta = document.querySelector('a.playbackSoundBadge__titleLink, a.playbackSoundBadge__title');\n    var artistEl = document.querySelector('a.playbackSoundBadge__lightLink');\n    var likeBtn = document.querySelector('button.playbackSoundBadge__like');\n    return {\n      'track': (metaSession && metaSession.title) ? metaSession.title : (meta ? (meta.title || meta.textContent.trim()) : document.title),\n      'artist': (metaSession && metaSession.artist) ? metaSession.artist : (artistEl ? artistEl.textContent.trim() : 'SoundCloud'),\n      'image': (metaSession && metaSession.artwork && metaSession.artwork.length) ? metaSession.artwork[metaSession.artwork.length - 1].src : '',\n      'favorited': likeBtn ? likeBtn.classList.contains('sc-button-selected') : false\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*open.spotify.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Spotify Web",
+    "favoriteScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('[data-testid=\"add-button\"], .spoticon-add-16');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "Spotify.js",
+    "id" : "Spotify",
+    "isPlayingScript" : "(function(){ try { return (function() {\n    if (navigator.mediaSession && navigator.mediaSession.playbackState === 'playing') return true;\n    var btn = document.querySelector('[data-testid=\"control-button-playpause\"]');\n    if (btn) {\n      var label = (btn.getAttribute('aria-label') || '').toLowerCase();\n      if (label.includes('pause') || label.includes('pausa')) return true;\n    }\n    var legacy = document.querySelector('.control-button--circled');\n    return legacy ? legacy.classList.contains('spoticon-pause-16') : false;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('[data-testid=\"control-button-skip-forward\"], .spoticon-skip-forward-16');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('[data-testid=\"control-button-playpause\"]');\n    if (btn) {\n      var label = (btn.getAttribute('aria-label') || '').toLowerCase();\n      if (label.includes('pause') || label.includes('pausa')) { btn.click(); }\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('[data-testid=\"control-button-skip-back\"], .spoticon-skip-back-16');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('[data-testid=\"control-button-playpause\"], .control-button--circled');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var meta = (navigator.mediaSession && navigator.mediaSession.metadata) ? navigator.mediaSession.metadata : null;\n    var trackEl = document.querySelector('[data-testid=\"context-item-info-title\"], .track-info__name a');\n    var artistEl = document.querySelector('[data-testid=\"context-item-info-subtitles\"], .track-info__artists a');\n    var imgEl = document.querySelector('[data-testid=\"cover-art-image\"]');\n    return {\n      'image': (meta && meta.artwork && meta.artwork.length) ? meta.artwork[meta.artwork.length - 1].src : (imgEl ? imgEl.src : ''),\n      'track': (meta && meta.title) ? meta.title : (trackEl ? trackEl.textContent.trim() : document.title),\n      'artist': (meta && meta.artist) ? meta.artist : (artistEl ? artistEl.textContent.trim() : 'Spotify')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*webplayer.stingray.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Stingray",
+    "favoriteScript" : "(function(){ try { return (function () {\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "Stingray.js",
+    "id" : "Stingray",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    return (document.querySelectorAll(\"minimized-player .stopped-info\").length === 0);\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var button = document.querySelector('player .button.skip');\n    return button.click();\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var buttons = document.querySelectorAll('player primary-player-controls .button');\n    return buttons[Math.floor(buttons.length \/ 2)].click();\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector(\".track-info-container .title\").innerText.trim().split(\"\\n\")[0],\n      'album': document.querySelector(\".track-info-container .album\").innerText.trim().split(\"\\n\")[0],\n      'artist': document.querySelector(\".track-info-container artist-names\").innerText.trim().split(\"\\n\")[0],\n      'image': document.querySelector(\".album-cover .background\").getAttribute(\"style\").match(\/(?:url)\\((.*?)\\)\/)[1].replace(\/('|\")\/g, ''),\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*stitcher.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Stitcher",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Stitcher.js",
+    "id" : "Stitcher",
+    "isPlayingScript" : "(function(){ try { return (function () { return document.getElementById('jp_audio_0').paused; })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { return document.getElementById('jp_audio_0').pause(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var player = document.getElementById('jp_audio_0');\n    if (player.paused) { player.play() }\n    else { player.pause() }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*stripewaves.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Stripewaves",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Stripewaves.js",
+    "id" : "Stripewaves",
+    "isPlayingScript" : "(function(){ try { return (function () {$('.playButton').hasClass('is-playing')})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {$('.nextButton').click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {$('.playButton').hasClass('is-playing') && $('.playButton').click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {$('.prevButton').click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {$('.playButton').click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n      return {\n          'image': $(\".is-playing .track-artwork\").attr('src'),\n          'track': $(\".currentTrack-title\").text(),\n          'artist': $(\".currentTrack-user\").text()\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*play.stylejukebox.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Style Jukebox",
+    "favoriteScript" : "(function(){ try { return (function (){$('div.player-content span.favoriteImage').click();})(); } catch (e) { return null; } })()",
+    "fileName" : "StyleJukebox.js",
+    "id" : "StyleJukebox",
+    "isPlayingScript" : "(function(){ try { return (function(){return $('div.player-content span.play-button').hasClass('ng-hide');})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {$('div.player-content span.next').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {if($('div.player-content span.play-button').hasClass('ng-hide')) $('div.player-content span.playpause').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {$('div.player-content span.prev').click();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {$('div.player-content span.playpause').click();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        var playerContent = $('div.player-content');\n        return {\n            \n            'track': playerContent.find('span.song-title').get(0).innerText,\n            'artist': playerContent.find('span.song-artist').get(0).innerText,\n            'image': playerContent.find('div.playerAlbumArt img').attr('src'),\n            'favorited': playerContent.find('img.favImage').attr('src').includes('favorites_active.')\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*Subsonic*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Subsonic",
+    "favoriteScript" : "(function(){ try { return (function () { window.frames['playQueue'].onStar(window.frames['playQueue']).getCurrentSongIndex() })(); } catch (e) { return null; } })()",
+    "fileName" : "Subsonic.js",
+    "id" : "Subsonic",
+    "isPlayingScript" : "(function(){ try { return (function () { return window.frames['playQueue'].jwplayer().getState() === 'PLAYING' })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { window.frames['playQueue'].onNext() })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { window.frames['playQueue'].jwplayer().pause(true) })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { window.frames['playQueue'].onPrevious() })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { window.frames['playQueue'].jwplayer().play() })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var index = window.frames['playQueue'].getCurrentSongIndex();\n    var playQueue = window.frames['playQueue'].songs[index];\n    var ret = playQueue.getCurrentSongIndex();\n    return {\n        'title': ret.title,\n        'album': ret.album,\n        'artist': ret.artist,\n        'favorited': ret.starred,\n        'image': ret.albumUrl.replace('main', 'coverArt').concat('&size=128'),\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptScript" : "(function(){ try { return (function () {\n      \/* first check if the window is running synology webmanager  *\/\n      if (window.SYNO_WebManager_Strings != undefined) {\n        \/* check if window is running synology audio station *\/\n        return (baseURL == \"webman\/3rdparty\/AudioStation\");\n      }\n    })(); } catch (e) { return null; } })()",
+    "acceptType" : "script",
+    "displayName" : "Synology Audio Station",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Synology.js",
+    "id" : "Synology",
+    "isPlayingScript" : "(function(){ try { return (function () {return ( (document.querySelector('.player-play span:not(.player-btn-pause)') ? false : true));})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-next button')[0].click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-stop button')[0].click()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-prev button')[0].click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {document.querySelectorAll('.player-play button')[0].click()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var track = document.querySelector('.info-title span').innerText;\n    var albumArtist = document.querySelector('.info-album-artist span').innerText.split(' - ');\n    var album = albumArtist[0];\n    var artist = albumArtist.reverse();\n    var progress = document.querySelector('.syno-as-player-position-block').innerText;\n    \/*\n    Image not used due to image resources can only be loaded by authenticated apps\n    var albumArt = document.querySelector('.player-info-thumb').getAttribute('src');\n    *\/\n    return {\n      'track': track,\n      'artist': artist[0],\n      'album': album,\n      'progress': progress\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*turktelekommuzik.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "TT Muzik",
+    "favoriteScript" : "",
+    "fileName" : "TTMuzik.js",
+    "id" : "TTMuzik",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('#player-next').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { document.querySelector('#player-play').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('#player-prev').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('#player-play').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*tunein.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "TuneIn",
+    "favoriteScript" : "(function(){ try { return (function () { $('.icon.follow').click() })(); } catch (e) { return null; } })()",
+    "fileName" : "TuneIn.js",
+    "id" : "TuneIn",
+    "isPlayingScript" : "(function(){ try { return (function () { return $('#tuner').attr('class') === 'playing' })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if($('#tuner').attr('class') == 'playing'){\n      document.querySelector('.playbutton-cont').click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function() { document.querySelector('.playbutton-cont').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var ret = TuneIn.app.nowPlaying.broadcast;\n    return {\n      'track': ret.DisplaySubtitle,\n      'album': ret.EchoData.title,\n      'artist': ret.Location,\n      'favorited': $('#tuner div.icon.follow').hasClass('in'),\n      'image': $('.artwork.col._navigateNowPlaying').children('.image').children('.logo.loaded').attr('src'),\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*22tracks.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "22tracks",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "TwentyTwoTracks.js",
+    "id" : "TwentyTwoTracks",
+    "isPlayingScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {angular.element(document.querySelector('.player .ng-scope')).scope().Audio.next()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {angular.element(document.querySelector('.player .ng-scope')).scope().Audio.pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {angular.element(document.querySelector('.player .ng-scope')).scope().Audio.previous()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {angular.element(document.querySelector('.player .ng-scope')).scope().Audio.playpause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*twitch.tv\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "twitch.tv",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Twitch.js",
+    "id" : "Twitch",
+    "isPlayingScript" : "(function(){ try { return (function () {\n      var doc = document;\n      var frame = $('iframe[src^=\\'http:\/\/player.twitch.tv\/?channel=\\']').get(0);\n      if (frame) {\n          doc = frame.contentDocument || frame.contentWindow.document;\n      }\n      return (doc.querySelector('.player[data-paused=\\\"false\\\"]') != null);\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n      var doc = document;\n      var frame = $('iframe[src^=\\'http:\/\/player.twitch.tv\/?channel=\\']').get(0);\n      if (frame) {\n          doc = frame.contentDocument || frame.contentWindow.document;\n      }\n      doc.querySelector('.player[data-paused=\"false\"] .js-control-playpause-button').click()\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var doc = document;\n    var frame = $(\"iframe[src^='http:\/\/player.twitch.tv\/?channel=']\").get(0);\n    if (frame) {\n        doc = frame.contentDocument || frame.contentWindow.document;\n    }\n    doc.querySelector('.js-control-playpause-button').click()\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*udemy.com*\/lecture\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Udemy",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Udemy.js",
+    "id" : "Udemy",
+    "isPlayingScript" : "(function(){ try { return (function () {return !(document.querySelector('video-player video').paused);})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector(\"a.udi.udi-vjs-forward.btn\").click()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelector('video-player video').pause();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {document.querySelector(\"a.udi.udi-vjs-rewind.btn\").click()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var theVideo = document.querySelector('video-player video');\n    if (theVideo.paused) { theVideo.play(); }\n    else { theVideo.pause() }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('.course-info__title').textContent,\n      'album': 'Udemy'\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*vessel.com\/videos\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Vessel",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Vessel.js",
+    "id" : "Vessel",
+    "isPlayingScript" : "(function(){ try { return (function () { return !(document.querySelector('video.video-show').paused)})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelector('video.video-show').pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    v = document.querySelector('video.video-show');\n    if (v.paused) {\n      v.play();\n    }\n    else {\n      v.pause();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.title.substr(6),\n      \/\/ FIXME selector currently is invalid\n      \/\/'image': document.querySelector('img[style=\"width:34px;height:34px;border-bottom-left-radius:4px;border-top-left-radius:4px;\"]').src.replace(\/?w=.*\/, '')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*vimeo.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Vimeo",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "Vimeo.js",
+    "id" : "Vimeo",
+    "isPlayingScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {return window.vimeo.active_player.pause()})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {return window.vimeo.active_player.paused?window.vimeo.active_player.play():window.vimeo.active_player.pause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*vk.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "VK",
+    "favoriteScript" : "(function(){ try { return (function () {\n        (function (w) {\n         var el = document.querySelector('.audio_page_player_add#add');\n         if (el) { el.click(); return; }\n         w.AudioUtils.showAudioLayer();\n         var pollPlayerInterval = setInterval(\n            (function(w){\n                return function(){\n                    var el = document.querySelector('.audio_page_player_add#add');\n                    if (!el) { return; }\n                    clearInterval(pollPlayerInterval);\n                    el.click();\n                    w.AudioUtils.showAudioLayer();\n                }\n            })(w), 10);\n         }(window))\n    })(); } catch (e) { return null; } })()",
+    "fileName" : "Vk.js",
+    "id" : "Vk",
+    "isPlayingScript" : "(function(){ try { return (function () {\n        return (document.querySelector('#top_audio_player.top_audio_player_playing') != null);\n    })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n        var el = document.querySelector('#top_audio_player > button.top_audio_player_btn.top_audio_player_next');\n        if (el) { el.click(); return; }\n        return;\n    })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n        if (document.querySelector('#top_audio_player.top_audio_player_playing') != null) {\n            var el = document.querySelector('#top_audio_player > button.top_audio_player_btn.top_audio_player_play');\n            if (el) { el.click(); }\n        }\n        return;\n            \n    })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n        var el = document.querySelector('#top_audio_player > button.top_audio_player_btn.top_audio_player_prev');\n        if (el) { el.click(); }\n        return;\n    })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n        (function (w) {\n         var el = document.querySelector('#top_audio_player > button.top_audio_player_btn.top_audio_player_play');\n         if (el) { el.click(); return; }\n         w.AudioUtils.showAudioLayer();\n         var pollPlayerInterval = setInterval(\n            (function(w){\n                return function(){\n                    var el = document.querySelector('.audio_page_player_play');\n                    if (!el) { return; }\n                    clearInterval(pollPlayerInterval);\n                    el.click();\n                    w.AudioUtils.showAudioLayer();\n                }\n            })(w), 10);\n         }(window))\n    })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        var fullTitle = document.querySelector('#top_audio_player > div.top_audio_player_title_wrap > div');\n        var fullTitleText = fullTitle.textContent.split(\" – \");\n        if (!fullTitle) {\n            return {};\n        }\n        return {\n            'artist': fullTitleText[0],\n            'track': fullTitleText[1]\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 3
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*play.watcha.net\/watch*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Watcha Play",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "WatchaPlay.js",
+    "id" : "WatchaPlay",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var v = document.querySelector('video');\n    return v && !v.paused;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var v=document.querySelector('video');\n    v && v.pause();\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var v=document.querySelector('video');\n    if (v) { v.paused ? v.play() : v.pause(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var track = document.querySelector('.vjs-display');\n    return {\n        track: track ? track.innerText : ''\n    }\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*wonder.fm*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "WonderFM",
+    "favoriteScript" : "(function(){ try { return (function () {\n        var btn = document.querySelector(\".track--active .track-fav\");\n        var evt = document.createEvent(\"MouseEvents\");\n\n        evt.initMouseEvent(\"click\", true, true, window, 1, 0, 0, 0, 0,\n                false, false, false, false, 0, null);\n        btn.dispatchEvent(evt);\n    })(); } catch (e) { return null; } })()",
+    "fileName" : "WonderFm.js",
+    "id" : "WonderFm",
+    "isPlayingScript" : "(function(){ try { return (function () {\n        var isPlaying = !document.querySelector(\".show--activeTrack .player-play\").classList.contains(\"ng-hide\");\n        return isPlaying;\n    })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n        var btn = document.querySelector(\".show--activeTrack .player-skip\");\n        var evt = document.createEvent(\"MouseEvents\");\n\n        evt.initMouseEvent(\"click\", true, true, window, 1, 0, 0, 0, 0,\n                false, false, false, false, 0, null);\n        btn.dispatchEvent(evt);\n    })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n        var btn = document.querySelector(\".show--activeTrack .player-pause\");\n        var evt = document.createEvent(\"MouseEvents\");\n\n        evt.initMouseEvent(\"click\", true, true, window, 1, 0, 0, 0, 0,\n                false, false, false, false, 0, null);\n        btn.dispatchEvent(evt);\n    })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n        var t = document.querySelector(\".track--active\"),\n            p = document.querySelector(\".player__scrubber\");\n        if (!t) {return;}\n        if (p && p.value > 0.01) {\/* rewind instead of previous song if playhead further than 1% *\/\n            t = p;\n        }\n        else {\n            while (t = t.previousSibling) {\n                if (t.classList && t.classList.contains(\"track\")) {break;}\n            }   \n        }\n        if (t) {\n            var evt = document.createEvent(\"MouseEvents\");\n\n            evt.initMouseEvent(\"click\", true, true, window, 1, 0, 0, 0, 0,\n                    false, false, false, false, 0, null);\n            t.dispatchEvent(evt);\n        }\n    })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n        var isPlaying = !document.querySelector(\".show--activeTrack .player-play\").classList.contains(\"ng-hide\");\n        var btn = isPlaying ? document.querySelector(\".show--activeTrack .player-pause\") : document.querySelector(\".show--activeTrack .player-play\");\n        var evt = document.createEvent(\"MouseEvents\");\n\n        evt.initMouseEvent(\"click\", true, true, window, 1, 0, 0, 0, 0,\n                false, false, false, false, 0, null);\n        btn.dispatchEvent(evt);\n    })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n        return {\n            \"track\": document.querySelector(\".track--active .track-name > a\").text,\n            \"artist\": document.querySelector(\".track--active .track-artist > a\").text\n        };\n    })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*music.microsoft.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Xbox Music",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "XboxMusic.js",
+    "id" : "XboxMusic",
+    "isPlayingScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {window.app.mainViewModel.playerVM.next()})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var app = window.app.mainViewModel.playerVM;\n    if(app.isPlayingOrLoading()) {\n      app.togglePause()\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {window.app.mainViewModel.playerVM.previous()})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {window.app.mainViewModel.playerVM.togglePause()})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*xiami.com\/play*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Xiami",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('#J_trackFav').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "Xiami.js",
+    "id" : "Xiami",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var t = document.querySelector('.pause-btn');\n    return (t.style.display==='block');\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('.next-btn').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () { \/* pause site playing *\/ })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('.prev-btn').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('#J_playBtn').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track':  document.querySelector('#J_trackName').innerText,\n      'artist': document.querySelector('#J_trackName + a').innerText,\n      'album': document.querySelector('#J_playerCoverImg').alt.replace('-' + document.querySelector('#J_trackName + a').innerText, ''),\n      'image': document.querySelector('#J_playerCoverImg').src,\n      'favorited': document.querySelector('#J_trackFav').classList.contains('icon-faved'),\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*music.yandex.*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "YandexMusic",
+    "favoriteScript" : "(function(){ try { return (function () {externalAPI.toggleLike();})(); } catch (e) { return null; } })()",
+    "fileName" : "YandexMusic.js",
+    "id" : "YandexMusic",
+    "isPlayingScript" : "(function(){ try { return (function () {return externalAPI.isPlaying();})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {externalAPI.next();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if (self.isPlaying()){externalAPI.togglePause();}\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {externalAPI.prev();})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {externalAPI.togglePause();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      track:  externalAPI.getCurrentTrack().title,\n      artist: externalAPI.getCurrentTrack().artists.map(item => item.title).join(', '),\n      favorited: externalAPI.getCurrentTrack().liked,\n      image: externalAPI.getCurrentTrack().cover.replace('%%', '400x400')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 4
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*radio.yandex.*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "YandexRadio",
+    "favoriteScript" : "(function(){ try { return (function () {externalAPI.toggleLike();})(); } catch (e) { return null; } })()",
+    "fileName" : "YandexRadio.js",
+    "id" : "YandexRadio",
+    "isPlayingScript" : "(function(){ try { return (function () {return externalAPI.isPlaying();})(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {externalAPI.next();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    if (self.isPlaying()){externalAPI.togglePause();}\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {externalAPI.togglePause();})(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      track:  externalAPI.getCurrentTrack().title,\n      artist: externalAPI.getCurrentTrack().artists.map(item => item.title).join(', '),\n      favorited: externalAPI.getCurrentTrack().liked,\n      image: externalAPI.getCurrentTrack().cover.replace('%%', '400x400')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 4
+  },
+  {
+    "acceptArgs" : [
+      "URL",
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*youtube.com\/*' && !%K LIKE[c] '*music.youtube.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "YouTube",
+    "favoriteScript" : "(function(){ try { return (function () {\n    var btn = document.querySelector('like-button-view-model button, #segmented-like-button button, ytd-toggle-button-renderer button');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "YouTube.js",
+    "id" : "YouTube",
+    "isPlayingScript" : "(function(){ try { return (function () {\n    var v = document.querySelector('#movie_player video') || document.querySelector('video');\n    return v ? (!v.paused && !v.ended) : false;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {\n    var p = document.querySelector('#movie_player');\n    if (p && typeof p.nextVideo === 'function') { p.nextVideo(); return; }\n    var btn = document.querySelector('.ytp-next-button');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var p = document.querySelector('#movie_player');\n    if (p && typeof p.pauseVideo === 'function') { p.pauseVideo(); return; }\n    var v = document.querySelector('video');\n    if (v && !v.paused) { v.pause(); }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {\n    var p = document.querySelector('#movie_player');\n    if (p && typeof p.previousVideo === 'function') { p.previousVideo(); return; }\n    var btn = document.querySelector('.ytp-prev-button');\n    if (btn && btn.style.display !== 'none') { btn.click(); return; }\n    var v = document.querySelector('video');\n    if (v) { v.currentTime = 0; }\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    var p = document.querySelector('#movie_player');\n    if (p && typeof p.getPlayerState === 'function') {\n      if (p.getPlayerState() === 1) { p.pauseVideo(); } else { p.playVideo(); }\n      return;\n    }\n    var btn = document.querySelector('#movie_player .ytp-play-button, .ytp-play-button');\n    if (btn) { btn.click(); return; }\n    var v = document.querySelector('video');\n    if (v) { if (v.paused) v.play(); else v.pause(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    var meta = (navigator.mediaSession && navigator.mediaSession.metadata) ? navigator.mediaSession.metadata : null;\n    var titleEl = document.querySelector('h1.ytd-watch-metadata yt-formatted-string, #title h1');\n    var authorEl = document.querySelector('#upload-info #channel-name a, ytd-channel-name a');\n    var track = (meta && meta.title) ? meta.title : (titleEl ? titleEl.textContent.trim() : document.title.replace(\/ - YouTube$\/, ''));\n    var artist = (meta && meta.artist) ? meta.artist : (authorEl ? authorEl.textContent.trim() : 'YouTube');\n    var img = (meta && meta.artwork && meta.artwork.length) ? meta.artwork[meta.artwork.length - 1].src : '';\n    var likeBtn = document.querySelector('like-button-view-model button, #segmented-like-button button');\n    var fav = likeBtn ? (likeBtn.getAttribute('aria-pressed') === 'true') : false;\n    return {\n      'image': img,\n      'track': track,\n      'artist': artist,\n      'favorited': fav\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 5
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*music.youtube.com\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "YouTube Music",
+    "favoriteScript" : "(function(){ try { return (function() {\n    var btn = document.querySelector('ytmusic-like-button-renderer #button-shape-like button, ytmusic-like-button-renderer .like');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "fileName" : "YouTubeMusic.js",
+    "id" : "YouTubeMusic",
+    "isPlayingScript" : "(function(){ try { return (function() {\n    var v = document.querySelector('#movie_player video') || document.querySelector('video');\n    return v ? (!v.paused && !v.ended) : false;\n  })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function() {\n    var btn = document.querySelector('.next-button, .ytmusic-player-bar.next-button, tp-yt-paper-icon-button.next-button');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function() {\n    var v = document.querySelector('#movie_player video') || document.querySelector('video');\n    if (v && !v.paused) {\n      var btn = document.querySelector('#play-pause-button, .ytmusic-player-bar.play-pause-button');\n      if (btn) { btn.click(); } else { v.pause(); }\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function() {\n    var btn = document.querySelector('.previous-button, .ytmusic-player-bar.previous-button, tp-yt-paper-icon-button.previous-button');\n    if (btn) { btn.click(); }\n  })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function() {\n    var btn = document.querySelector('#play-pause-button, .ytmusic-player-bar.play-pause-button, tp-yt-paper-icon-button.play-pause-button');\n    if (btn) { btn.click(); return; }\n    var v = document.querySelector('video');\n    if (v) { if (v.paused) v.play(); else v.pause(); }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function() {\n    var meta = (navigator.mediaSession && navigator.mediaSession.metadata) ? navigator.mediaSession.metadata : null;\n    var titleEl = document.querySelector('.title.ytmusic-player-bar');\n    var bylineEl = document.querySelector('.byline.ytmusic-player-bar');\n    var thumbEl = document.querySelector('.ytmusic-player-bar img');\n    var likeEl = document.querySelector('ytmusic-like-button-renderer');\n    return {\n      'image': (meta && meta.artwork && meta.artwork.length) ? meta.artwork[meta.artwork.length - 1].src : (thumbEl ? thumbEl.src : ''),\n      'track': (meta && meta.title) ? meta.title : (titleEl ? titleEl.textContent.trim() : document.title),\n      'artist': (meta && meta.artist) ? meta.artist : (bylineEl ? bylineEl.textContent.trim() : 'YouTube Music'),\n      'album': (meta && meta.album) ? meta.album : '',\n      'favorited': likeEl ? (likeEl.getAttribute('like-status') === 'LIKE') : false\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 2
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*mp3.zing.vn\/*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Zing MP3",
+    "favoriteScript" : "",
+    "fileName" : "Zing.js",
+    "id" : "Zing",
+    "isPlayingScript" : "",
+    "nextScript" : "(function(){ try { return (function(){ document.querySelector('.fn-next').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function(){ document.querySelector('.jp-pause').click(); })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function(){ document.querySelector('.fn-prev').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function(){  if (document.querySelector('.jp-play').style.display === 'none') { document.querySelector('.jp-pause').click(); } else { document.querySelector('.jp-play').click();} })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n        'image': document.querySelector('.pthumb').getAttribute('src'),\n        'track':  document.querySelector('.fn-song.fn-current .fn-name').innerText,\n        'artist': document.querySelector('.fn-song.fn-current h4 a').innerText\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*zvooq.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "Zvooq",
+    "favoriteScript" : "(function(){ try { return (function () { document.querySelector('.topPanelTimeline-favorite .favorite').click(); })(); } catch (e) { return null; } })()",
+    "fileName" : "Zvooq.js",
+    "id" : "Zvooq",
+    "isPlayingScript" : "(function(){ try { return (function () { return !!document.querySelector('.topPanelPause'); })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () { document.querySelector('.topPanelForward').click(); })(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {\n    var pauseButton = document.querySelector('.topPanelPause');\n    if (pauseButton != null) {\n      pauseButton.click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () { document.querySelector('.topPanelRewind').click(); })(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () { document.querySelector('.topPanelPlay, .topPanelPause').click(); })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector('.topPanelTimeline-intitleRelease').innerText,\n      'artist': document.querySelector('.topPanelTimeline-intitleArtist').innerText,\n      'favorited': !!document.querySelector('.topPanelTimeline-favorite .favorite_checked')\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  },
+  {
+    "acceptArgs" : [
+      "URL"
+    ],
+    "acceptFormat" : "%K LIKE[c] '*iheart.com*'",
+    "acceptType" : "predicateOnTab",
+    "displayName" : "iHeartRadio",
+    "favoriteScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "fileName" : "iHeartRadio.js",
+    "id" : "iHeartRadio",
+    "isPlayingScript" : "(function(){ try { return (function() { document.querySelectorAll('[aria-label=\"Stop\"], [aria-label=\"Pause\"]').length > 0 })(); } catch (e) { return null; } })()",
+    "nextScript" : "(function(){ try { return (function () {document.querySelector('[aria-label=\"Skip\"]').click();})(); } catch (e) { return null; } })()",
+    "pauseScript" : "(function(){ try { return (function () {document.querySelector('[aria-label=\"Stop\"]').click();})(); } catch (e) { return null; } })()",
+    "previousScript" : "(function(){ try { return (function () {})(); } catch (e) { return null; } })()",
+    "toggleScript" : "(function(){ try { return (function () {\n    if (document.querySelectorAll('[aria-label=\"Stop\"], [aria-label=\"Pause\"]').length > 0) {\n      try{\n        document.querySelector('[aria-label=\"Stop\"]').click();\n      } catch(e){\n        document.querySelector('[aria-label=\"Pause\"]').click();\n      }\n    } else {\n      var plays = document.querySelectorAll('[aria-label=\"Play Station\"]');\n      plays[plays.length-1].click();\n    }\n  })(); } catch (e) { return null; } })()",
+    "trackInfoScript" : "(function(){ try { return (function () {\n    return {\n      'track': document.querySelector(\".player-song\").textContent,\n      'album': document.querySelector(\".player-artist\").textContent,\n      'image': document.querySelector(\".player-art > img\").src.split(\"?\")[0]\n    };\n  })(); } catch (e) { return null; } })()",
+    "version" : 1
+  }
+]

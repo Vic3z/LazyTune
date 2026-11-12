@@ -45,6 +45,16 @@ nonisolated struct AppSettings: Codable, Equatable {
     var mediaKeyControlEnabled: Bool = true        // Intercept F10/F11/F12 to drive the default output device
     var volumeHotkeyStep: VolumeHotkeyStep = .normal  // Slider-domain step per keypress; user-configurable
 
+    // Universal Media Player Control (BeardedSpice Integration)
+    var mediaPlayerControlEnabled: Bool = true     // Intercept F7/F8/F9 to control browser tabs & media apps
+    var showMediaHUD: Bool = true                  // Show Tahoe-style track HUD on playback actions
+    var showNowPlayingInPopup: Bool = true         // Show Now Playing mini-player bar in menu bar popup
+    var autoPauseOnHeadphoneDisconnect: Bool = true // Pause active player when output device disconnects
+    var autoPauseOnSleep: Bool = true              // Pause active player when Mac goes to sleep
+    var pausePreviousOnPlayerSwitch: Bool = true   // Pause previous player when switching active target
+    var universalHTML5FallbackEnabled: Bool = true // Control any website with <video>/<audio>
+    var disabledMediaStrategies: Set<String> = []  // IDs of disabled BeardedSpice strategies
+
     // Global Hotkeys
     // Keyed by ShortcutAction.rawValue. Values mirror what KeyboardShortcuts persists in
     // its UserDefaults; settings.json is the source of truth.
@@ -75,6 +85,14 @@ nonisolated struct AppSettings: Codable, Equatable {
         hudStyle = try c.decodeIfPresent(HUDStyle.self, forKey: .hudStyle) ?? .tahoe
         mediaKeyControlEnabled = try c.decodeIfPresent(Bool.self, forKey: .mediaKeyControlEnabled) ?? true
         volumeHotkeyStep = try c.decodeIfPresent(VolumeHotkeyStep.self, forKey: .volumeHotkeyStep) ?? .normal
+        mediaPlayerControlEnabled = try c.decodeIfPresent(Bool.self, forKey: .mediaPlayerControlEnabled) ?? true
+        showMediaHUD = try c.decodeIfPresent(Bool.self, forKey: .showMediaHUD) ?? true
+        showNowPlayingInPopup = try c.decodeIfPresent(Bool.self, forKey: .showNowPlayingInPopup) ?? true
+        autoPauseOnHeadphoneDisconnect = try c.decodeIfPresent(Bool.self, forKey: .autoPauseOnHeadphoneDisconnect) ?? true
+        autoPauseOnSleep = try c.decodeIfPresent(Bool.self, forKey: .autoPauseOnSleep) ?? true
+        pausePreviousOnPlayerSwitch = try c.decodeIfPresent(Bool.self, forKey: .pausePreviousOnPlayerSwitch) ?? true
+        universalHTML5FallbackEnabled = try c.decodeIfPresent(Bool.self, forKey: .universalHTML5FallbackEnabled) ?? true
+        disabledMediaStrategies = try c.decodeIfPresent(Set<String>.self, forKey: .disabledMediaStrategies) ?? []
         customShortcuts = try c.decodeIfPresent([String: ShortcutCodable].self, forKey: .customShortcuts) ?? [:]
         appearance = try c.decodeIfPresent(AppearancePreference.self, forKey: .appearance) ?? .system
         popupSize = try c.decodeIfPresent(MenuBarPopupSize.self, forKey: .popupSize) ?? .comfortable

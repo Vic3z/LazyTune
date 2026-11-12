@@ -61,6 +61,9 @@ struct AutoEQPicker: View {
 
     private var triggerButton: some View {
         Button {
+            if !isExpanded {
+                profileManager.ensureCatalogLoaded()
+            }
             withAnimation(.snappy(duration: 0.2)) {
                 isExpanded.toggle()
             }

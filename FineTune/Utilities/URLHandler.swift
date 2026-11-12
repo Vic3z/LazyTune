@@ -22,10 +22,12 @@ protocol URLHandlerEngine {
 @MainActor
 final class URLHandler {
     private let audioEngine: any URLHandlerEngine
+    private let mediaPlayerController: MediaPlayerController?
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "FineTune", category: "URLHandler")
 
-    init(audioEngine: any URLHandlerEngine) {
+    init(audioEngine: any URLHandlerEngine, mediaPlayerController: MediaPlayerController? = nil) {
         self.audioEngine = audioEngine
+        self.mediaPlayerController = mediaPlayerController
     }
     
     func handleURL(_ url: URL) {
@@ -56,6 +58,22 @@ final class URLHandler {
             handleSetDevice(queryItems: queryItems)
         case "reset":
             handleReset(queryItems: queryItems)
+        // Universal Media Control actions (BeardedSpice mode)
+        case "media-playpause":
+            mediaPlayerController?.playPauseToggle()
+        case "media-next":
+            mediaPlayerController?.nextTrack()
+        case "media-previous":
+            mediaPlayerController?.previousTrack()
+        case "media-favorite":
+            mediaPlayerController?.favoriteTrack()
+        case "media-active-tab":
+            mediaPlayerController?.setActiveTargetFromFrontmost()
+        case "media-track-info":
+            mediaPlayerController?.showTrackInfoHUD()
+        case "media-switch-player":
+            let dir = queryItems.first(where: { $0.name == "direction" })?.value?.lowercased()
+            mediaPlayerController?.switchPlayer(direction: dir == "prev" || dir == "previous" ? -1 : +1)
         default:
             logger.warning("Unknown URL action: \(host ?? "nil")")
         }

@@ -51,6 +51,9 @@ final class AudioEngine {
     private var tapRecoveryCooldownUntil: [pid_t: Date] = [:]  // Prevents tap recreation thrashing
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "FineTune", category: "AudioEngine")
 
+    /// Optional callback invoked when an active output device disconnects so MediaPlayerController can auto-pause playback.
+    var onOutputDeviceDisconnectedForMediaPause: (() -> Void)?
+
     // MARK: - Priority State Machine
 
     /// Tracks whether we're waiting for macOS to potentially auto-switch after a device connect.
@@ -1437,6 +1440,10 @@ final class AudioEngine {
         // If the disconnected device was the system default, override to priority fallback
         if wasDefaultOutput {
             reEvaluateOutputDefault(excluding: deviceUID)
+        }
+
+        if wasDefaultOutput || !affectedApps.isEmpty {
+            onOutputDeviceDisconnectedForMediaPause?()
         }
     }
 

@@ -10,12 +10,16 @@ private let logger = Logger(subsystem: "com.finetuneapp.FineTune", category: "Ap
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
     var audioEngine: AudioEngine?
+    var mediaPlayerController: MediaPlayerController?
 
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let audioEngine = audioEngine else {
             return
         }
-        let urlHandler = URLHandler(audioEngine: audioEngine)
+        let urlHandler = URLHandler(
+            audioEngine: audioEngine,
+            mediaPlayerController: mediaPlayerController
+        )
 
         for url in urls {
             urlHandler.handleURL(url)
@@ -50,6 +54,7 @@ struct FineTuneApp: App {
     @State private var menuBarPopupController: MenuBarPopupController
     @State private var shortcutsRegistry: ShortcutsRegistry
     @State private var resolver: TargetAppResolver
+    @State private var mediaController: MediaPlayerController
     @StateObject private var updateManager = UpdateManager()
     @State private var showMenuBarExtra = true
 
@@ -70,10 +75,11 @@ struct FineTuneApp: App {
                 mediaKeyStatus: mediaKeyStatus,
                 mediaKeyMonitor: mediaKeyMonitor,
                 shortcutsRegistry: shortcutsRegistry,
+                mediaController: mediaController,
                 updateManager: updateManager
             )
         }
-        FluidMenuBarExtra("FineTune", image: launchIconImage, isInserted: $showMenuBarExtra) {
+        FluidMenuBarExtra("LazyTune", image: launchIconImage, isInserted: $showMenuBarExtra) {
             menuBarContent
         }
     }
@@ -92,7 +98,8 @@ struct FineTuneApp: App {
             mediaKeyStatus: mediaKeyStatus,
             popupVisibility: popupVisibility,
             hudController: hudController,
-            mediaKeyMonitor: mediaKeyMonitor
+            mediaKeyMonitor: mediaKeyMonitor,
+            mediaController: mediaController
         )
         .task {
             // Idempotent: subsequent task runs (popup re-open) are no-ops inside start().
@@ -154,12 +161,26 @@ struct FineTuneApp: App {
             mediaKeyStatus: statusService
         )
         monitor.feedbackPlayer = feedbackPlayer
+
+        let strategyRegistry = MediaStrategyRegistry()
+        let mediaPlayerCtrl = MediaPlayerController(
+            strategyRegistry: strategyRegistry,
+            audioEngine: engine,
+            settingsManager: settings,
+            hudController: hud
+        )
+        monitor.mediaPlayerController = mediaPlayerCtrl
+        engine.onOutputDeviceDisconnectedForMediaPause = { [weak mediaPlayerCtrl] in
+            mediaPlayerCtrl?.handleOutputDeviceDisconnected()
+        }
+
         _accessibility = State(initialValue: accessibilityService)
         _mediaKeyStatus = State(initialValue: statusService)
         _popupVisibility = State(initialValue: popupService)
         _hudController = State(initialValue: hud)
         _mediaKeyMonitor = State(initialValue: monitor)
         _feedbackPlayer = State(initialValue: feedbackPlayer)
+        _mediaController = State(initialValue: mediaPlayerCtrl)
 
         let coordinator = MenuBarIconCoordinator(
             deviceVolumeMonitor: engine.deviceVolumeMonitor as! DeviceVolumeMonitor,
@@ -201,6 +222,9 @@ struct FineTuneApp: App {
         }
         accessibilityService.start()
         monitor.reconcile()
+        DispatchQueue.main.async { [mediaPlayerCtrl] in
+            mediaPlayerCtrl.refreshAvailableTargets()
+        }
 
         // Global hotkeys (KeyboardShortcuts SPM, Carbon-backed; no Accessibility
         // permission required for the hotkey itself). Registry start() is deferred
@@ -218,12 +242,14 @@ struct FineTuneApp: App {
             audioEngine: engine,
             hud: hud
         )
+        registry.mediaPlayerController = mediaPlayerCtrl
         _menuBarPopupController = State(initialValue: popupController)
         _shortcutsRegistry = State(initialValue: registry)
         _resolver = State(initialValue: resolver)
 
-        // Pass engine to AppDelegate
+        // Pass engine and media controller to AppDelegate
         _appDelegate.wrappedValue.audioEngine = engine
+        _appDelegate.wrappedValue.mediaPlayerController = mediaPlayerCtrl
 
         if permission.status == .unknown {
             permission.request()

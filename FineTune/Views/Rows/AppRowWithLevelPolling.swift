@@ -164,7 +164,10 @@ struct AppRowWithLevelPolling: View {
             repeats: true
         ) { _ in
             MainActor.assumeIsolated {
-                displayLevel = getAudioLevel()
+                let nextLevel = getAudioLevel()
+                if abs(nextLevel - displayLevel) > 0.005 || (nextLevel == 0 && displayLevel != 0) {
+                    displayLevel = nextLevel
+                }
             }
         }
     }

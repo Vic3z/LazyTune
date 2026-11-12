@@ -30,6 +30,9 @@ struct MenuBarPopupView: View {
     /// wired in `FineTuneApp.init`.
     let mediaKeyMonitor: MediaKeyMonitor
 
+    /// Universal BeardedSpice media player controller for the Now Playing mini-player bar.
+    @Bindable var mediaController: MediaPlayerController
+
     /// Memoized sorted output devices - only recomputed when device list or default changes
     @State private var sortedDevices: [AudioDevice] = []
 
@@ -47,7 +50,7 @@ struct MenuBarPopupView: View {
     @State private var isEQAnimating = false
 
     /// Track popup visibility to pause VU meter polling when hidden
-    @State private var isPopupVisible = true
+    @State private var isPopupVisible = false
 
     /// Error message shown when AutoEQ profile import fails
     @State private var autoEQImportError: String?
@@ -333,6 +336,16 @@ struct MenuBarPopupView: View {
     @ViewBuilder
     private func mainContent(scrollProxy: ScrollViewProxy) -> some View {
         VStack(alignment: .leading, spacing: DesignTokens.Spacing.sm) {
+            if audioEngine.settingsManager.appSettings.showNowPlayingInPopup && !isEditingDevicePriority {
+                NowPlayingBarView(
+                    mediaController: mediaController,
+                    isPopupVisible: isPopupVisible
+                )
+
+                Divider()
+                    .padding(.vertical, DesignTokens.Spacing.xs)
+            }
+
             // Devices section (tabbed: Output / Input)
             devicesSection
 

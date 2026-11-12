@@ -242,11 +242,19 @@ final class ProcessTapController: ProcessTapControlling {
     // MARK: - Public Methods
 
     func updateEQSettings(_ settings: EQSettings) {
+        if settings.isEnabled && eqProcessor == nil {
+            let sr = (try? primaryResources.aggregateDeviceID.readNominalSampleRate()) ?? 48000
+            eqProcessor = EQProcessor(sampleRate: sr)
+        }
         eqProcessor?.updateSettings(settings)
         secondaryEQProcessor?.updateSettings(settings)
     }
 
     func updateAutoEQProfile(_ profile: AutoEQProfile?) {
+        if profile != nil && autoEQProcessor == nil {
+            let sr = (try? primaryResources.aggregateDeviceID.readNominalSampleRate()) ?? 48000
+            autoEQProcessor = AutoEQProcessor(sampleRate: sr)
+        }
         autoEQProcessor?.updateProfile(profile)
         secondaryAutoEQProcessor?.updateProfile(profile)
     }
@@ -638,18 +646,25 @@ final class ProcessTapController: ProcessTapControlling {
         rampCoefficient = 1 - exp(-1 / (Float(sampleRate) * rampTimeSeconds))
         logger.debug("Ramp coefficient: \(self.rampCoefficient)")
 
-        eqProcessor = EQProcessor(sampleRate: sampleRate)
-        autoEQProcessor = AutoEQProcessor(sampleRate: sampleRate)
+        // Lazy-allocate EQProcessor and AutoEQProcessor only if active
+        if initial.eqSettings.isEnabled {
+            eqProcessor = EQProcessor(sampleRate: sampleRate)
+            eqProcessor?.updateSettings(initial.eqSettings)
+        } else {
+            eqProcessor = nil
+        }
+
+        if let profile = initial.autoEQProfile {
+            autoEQProcessor = AutoEQProcessor(sampleRate: sampleRate)
+            autoEQProcessor?.setPreampEnabled(initial.autoEQPreampEnabled)
+            autoEQProcessor?.updateProfile(profile)
+        } else {
+            autoEQProcessor = nil
+        }
+
         loudnessEqualizerProcessor = LoudnessEqualizer(settings: initial.loudnessEqualizerSettings, sampleRate: Float(sampleRate))
         loudnessCompensator = LoudnessCompensator(sampleRate: sampleRate)
 
-        // Apply persisted state to fresh processors before AudioDeviceStart so the
-        // first IOProc callback sees correct EQ/AutoEQ/Loudness coefficients.
-        eqProcessor?.updateSettings(initial.eqSettings)
-        autoEQProcessor?.setPreampEnabled(initial.autoEQPreampEnabled)
-        if let profile = initial.autoEQProfile {
-            autoEQProcessor?.updateProfile(profile)
-        }
         loudnessCompensator?.setEnabled(initial.loudnessCompensationEnabled)
         if initial.loudnessCompensationEnabled {
             loudnessCompensator?.updateForVolume(initial.loudnessVolume)

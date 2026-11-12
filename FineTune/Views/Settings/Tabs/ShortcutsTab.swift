@@ -25,6 +25,9 @@ struct ShortcutsTab: View {
         .onChange(of: settings.appSettings.mediaKeyControlEnabled) { _, _ in
             mediaKeyMonitor.reconcile()
         }
+        .onChange(of: settings.appSettings.mediaPlayerControlEnabled) { _, _ in
+            mediaKeyMonitor.reconcile()
+        }
     }
 
     // MARK: - Volume
@@ -52,10 +55,21 @@ struct ShortcutsTab: View {
     private var mediaKeysSection: some View {
         SettingsSection("Media Keys") {
             SettingsRow(
-                "Media Keys Control",
-                description: "Use F11/F12 (or volume keys) to control FineTune"
+                "Volume Media Keys (F10 / F11 / F12)",
+                description: "Use volume keys to control FineTune output volume and mute"
             ) {
                 Toggle("", isOn: $settings.appSettings.mediaKeyControlEnabled)
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .labelsHidden()
+            }
+
+            SettingsRowDivider()
+            SettingsRow(
+                "Universal Playback Media Keys (F7 / F8 / F9)",
+                description: "Control any browser tab or music app (BeardedSpice mode) without launching Apple Music"
+            ) {
+                Toggle("", isOn: $settings.appSettings.mediaPlayerControlEnabled)
                     .toggleStyle(.switch)
                     .controlSize(.small)
                     .labelsHidden()
@@ -114,6 +128,15 @@ struct ShortcutsTab: View {
         case .targetAppVolumeUp: "Raise volume for the app playing audio"
         case .targetAppVolumeDown: "Lower volume for the app playing audio"
         case .targetAppMuteToggle: "Mute or unmute the app playing audio"
+        case .mediaPlayPause: "Play or pause the active browser tab or media player"
+        case .mediaNextTrack: "Skip to the next track in the active media player"
+        case .mediaPreviousTrack: "Return to the previous track in the active media player"
+        case .mediaSetActiveTab: "Pin the frontmost browser tab or app as the active media target"
+        case .mediaFavorite: "Favorite or like the currently playing track"
+        case .mediaShowTrackInfo: "Show the on-screen HUD with current track title and artist"
+        case .mediaActivatePlayingTab: "Bring the active media player or browser tab to the front"
+        case .mediaSwitchPlayerNext: "Cycle to the next open media player or browser tab"
+        case .mediaSwitchPlayerPrevious: "Cycle to the previous open media player or browser tab"
         }
     }
 }

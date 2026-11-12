@@ -52,6 +52,7 @@ final class ShortcutsRegistry {
     private let resolver: any TargetAppResolving
     private let audioEngine: any AudioEngineDispatching
     private let hud: any PerAppHUDPresenting
+    var mediaPlayerController: MediaPlayerController?
     private var didStart = false
 
     /// Software-emulated key-repeat timing. Carbon hot keys don't auto-repeat,
@@ -93,6 +94,24 @@ final class ShortcutsRegistry {
             adjustTargetVolume(direction: -1)
         case .targetAppMuteToggle:
             toggleTargetMute()
+        case .mediaPlayPause:
+            mediaPlayerController?.playPauseToggle()
+        case .mediaNextTrack:
+            mediaPlayerController?.nextTrack()
+        case .mediaPreviousTrack:
+            mediaPlayerController?.previousTrack()
+        case .mediaSetActiveTab:
+            mediaPlayerController?.setActiveTargetFromFrontmost()
+        case .mediaFavorite:
+            mediaPlayerController?.favoriteTrack()
+        case .mediaShowTrackInfo:
+            mediaPlayerController?.showTrackInfoHUD()
+        case .mediaActivatePlayingTab:
+            mediaPlayerController?.activatePlayingTarget()
+        case .mediaSwitchPlayerNext:
+            mediaPlayerController?.switchPlayer(direction: +1)
+        case .mediaSwitchPlayerPrevious:
+            mediaPlayerController?.switchPlayer(direction: -1)
         }
     }
 
@@ -229,6 +248,15 @@ final class ShortcutsRegistry {
         case .targetAppVolumeUp: "frontmost-app-volume-up"
         case .targetAppVolumeDown: "frontmost-app-volume-down"
         case .targetAppMuteToggle: "frontmost-app-mute-toggle"
+        case .mediaPlayPause: "media-play-pause"
+        case .mediaNextTrack: "media-next-track"
+        case .mediaPreviousTrack: "media-previous-track"
+        case .mediaSetActiveTab: "media-set-active-tab"
+        case .mediaFavorite: "media-favorite"
+        case .mediaShowTrackInfo: "media-show-track-info"
+        case .mediaActivatePlayingTab: "media-activate-playing-tab"
+        case .mediaSwitchPlayerNext: "media-switch-player-next"
+        case .mediaSwitchPlayerPrevious: "media-switch-player-previous"
         }
     }
 }

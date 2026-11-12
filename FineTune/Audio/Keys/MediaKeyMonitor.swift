@@ -2,6 +2,7 @@
 import AppKit
 import AudioToolbox
 import CoreGraphics
+import MediaPlayer
 import os
 
 /// View-layer collaborators MediaKeyMonitor drives. Abstracting them keeps the audio
@@ -37,6 +38,11 @@ final class MediaKeyMonitor {
 
     private var tap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
+    private var isSwallowingTap: Bool = false
+    private var globalNSEventMonitor: Any?
+    private var localNSEventMonitor: Any?
+    private var remoteCommandsRegistered = false
+    private var lastPlaybackDispatchTime: DispatchTime?
 
     /// Second `.tapDisabledBy*` inside the watchdog window marks the feature offline.
     private var disableWatchdogTask: Task<Void, Never>?
@@ -58,6 +64,14 @@ final class MediaKeyMonitor {
 
     /// Plays the system volume-feedback pop on volume key steps. Wired by FineTuneApp after init.
     var feedbackPlayer: VolumeFeedbackPlayer?
+
+    /// Universal BeardedSpice media player controller for F7/F8/F9 playback keys. Wired by FineTuneApp after init.
+    var mediaPlayerController: MediaPlayerController?
+
+    private var isAnyTapFeatureEnabled: Bool {
+        settingsManager.appSettings.mediaKeyControlEnabled
+            || settingsManager.appSettings.mediaPlayerControlEnabled
+    }
 
     init(
         decoder: any MediaKeyEventDecoding,
@@ -86,38 +100,74 @@ final class MediaKeyMonitor {
         if let source = runLoopSource {
             CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
         }
+        if let globalNSEventMonitor {
+            NSEvent.removeMonitor(globalNSEventMonitor)
+        }
+        if let localNSEventMonitor {
+            NSEvent.removeMonitor(localNSEventMonitor)
+        }
         let nc = NSWorkspace.shared.notificationCenter
         for observer in workspaceObservers { nc.removeObserver(observer) }
     }
 
     // MARK: - Lifecycle
 
-    /// Idempotent. No-op unless media keys are enabled and Accessibility is trusted.
+    /// Idempotent. Installs CGEventTap + NSEvent systemDefined monitors + MPRemoteCommandCenter
+    /// for NX_SYSDEFINED media keys (F7/F8/F9 playback + F10/F11/F12 volume).
     func start() {
-        guard tap == nil else { return }
-        guard settingsManager.appSettings.mediaKeyControlEnabled else {
+        guard isAnyTapFeatureEnabled else {
             logger.debug("Media key control disabled in settings; tap not installed")
             return
         }
-        guard accessibility.isTrusted else {
-            logger.info("Accessibility not trusted; tap not installed")
-            return
-        }
+
+        installNSEventMonitorsIfNeeded()
+        configureRemoteCommandCenterIfNeeded()
+
+        guard tap == nil else { return }
 
         // NX_SYSDEFINED = 14 (from <IOLLEvent.h>); CGEventType has no Swift case.
         let mask = CGEventMask(1 << 14)
         let userInfo = Unmanaged.passUnretained(self).toOpaque()
 
-        guard let newTap = CGEvent.tapCreate(
-            tap: .cghidEventTap,
-            place: .headInsertEventTap,
-            options: .defaultTap,
-            eventsOfInterest: mask,
-            callback: mediaKeyTapCallback,
-            userInfo: userInfo
-        ) else {
-            logger.error("CGEvent.tapCreate returned nil — media keys will not be intercepted")
-            mediaKeyStatus.isOffline = true
+        // Try HID-level tap first; fall back to Session-level tap (BeardedSpice SPMediaKeyTap style),
+        // then listenOnly tap if active swallowing tap is disallowed when AXTrusted is false.
+        let candidates: [(CGEventTapLocation, CGEventTapOptions, String)] = [
+            (.cghidEventTap, .defaultTap, "hid-default"),
+            (.cgSessionEventTap, .defaultTap, "session-default"),
+            (.cgAnnotatedSessionEventTap, .defaultTap, "annotated-default"),
+            (.cghidEventTap, .listenOnly, "hid-listenOnly"),
+            (.cgSessionEventTap, .listenOnly, "session-listenOnly")
+        ]
+
+        var selectedTap: CFMachPort?
+        var selectedSwallowing = false
+        var selectedLabel = "none"
+
+        for (loc, opt, label) in candidates {
+            if let candidate = CGEvent.tapCreate(
+                tap: loc,
+                place: .headInsertEventTap,
+                options: opt,
+                eventsOfInterest: mask,
+                callback: mediaKeyTapCallback,
+                userInfo: userInfo
+            ) {
+                CGEvent.tapEnable(tap: candidate, enable: true)
+                if CGEvent.tapIsEnabled(tap: candidate) {
+                    selectedTap = candidate
+                    selectedSwallowing = (opt == .defaultTap)
+                    selectedLabel = label
+                    break
+                } else {
+                    CFMachPortInvalidate(candidate)
+                }
+            }
+        }
+
+        guard let newTap = selectedTap else {
+            self.isSwallowingTap = false
+            self.mediaKeyStatus.isOffline = false
+            logger.notice("No enabled CGEventTap available (AXTrusted=\(self.accessibility.isTrusted)); using NSEvent global monitor + MPRemoteCommandCenter")
             return
         }
 
@@ -127,14 +177,102 @@ final class MediaKeyMonitor {
 
         self.tap = newTap
         self.runLoopSource = source
+        self.isSwallowingTap = selectedSwallowing
         self.mediaKeyStatus.isOffline = false
-        logger.info("Media key tap installed")
+        let isEnabledNow = CGEvent.tapIsEnabled(tap: newTap)
+        logger.notice("Media key tap installed (mode=\(selectedLabel, privacy: .public), enabled=\(isEnabledNow), swallowing=\(selectedSwallowing), AXTrusted=\(self.accessibility.isTrusted))")
     }
 
-    /// Reconciles tap state against settings + Accessibility trust. Idempotent.
+    private func installNSEventMonitorsIfNeeded() {
+        if globalNSEventMonitor == nil {
+            globalNSEventMonitor = NSEvent.addGlobalMonitorForEvents(matching: .systemDefined) { [weak self] nsEvent in
+                MainActor.assumeIsolated {
+                    self?.handleNSEventSystemDefined(nsEvent)
+                }
+            }
+        }
+        if localNSEventMonitor == nil {
+            localNSEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .systemDefined) { [weak self] nsEvent in
+                MainActor.assumeIsolated {
+                    self?.handleNSEventSystemDefined(nsEvent)
+                }
+                return nsEvent
+            }
+        }
+    }
+
+    private func handleNSEventSystemDefined(_ nsEvent: NSEvent) {
+        guard isAnyTapFeatureEnabled else { return }
+        guard nsEvent.subtype.rawValue == 8 else { return }
+        let data1 = nsEvent.data1
+        let keyType = Int32((data1 & 0xFFFF0000) >> 16)
+        if keyType == 16 || keyType == 17 || keyType == 18 || keyType == 19 || keyType == 20 {
+            guard settingsManager.appSettings.mediaPlayerControlEnabled else { return }
+            if let mediaEvent = decoder.decode(data1: data1), mediaEvent.isPlaybackEvent {
+                logger.notice("NSEvent monitor observed media playback key: keyType=\(keyType)")
+                handlePlayback(mediaEvent)
+            }
+        }
+    }
+
+    private func configureRemoteCommandCenterIfNeeded() {
+        let center = MPRemoteCommandCenter.shared()
+        let enabled = settingsManager.appSettings.mediaPlayerControlEnabled
+        center.togglePlayPauseCommand.isEnabled = enabled
+        center.playCommand.isEnabled = enabled
+        center.pauseCommand.isEnabled = enabled
+        center.nextTrackCommand.isEnabled = enabled
+        center.previousTrackCommand.isEnabled = enabled
+
+        if !remoteCommandsRegistered {
+            remoteCommandsRegistered = true
+            center.togglePlayPauseCommand.addTarget { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, self.settingsManager.appSettings.mediaPlayerControlEnabled else { return }
+                    self.logger.notice("MPRemoteCommandCenter received togglePlayPauseCommand")
+                    self.handlePlayback(.playPause)
+                }
+                return .success
+            }
+            center.playCommand.addTarget { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, self.settingsManager.appSettings.mediaPlayerControlEnabled else { return }
+                    self.logger.notice("MPRemoteCommandCenter received playCommand")
+                    self.handlePlayback(.playPause)
+                }
+                return .success
+            }
+            center.pauseCommand.addTarget { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, self.settingsManager.appSettings.mediaPlayerControlEnabled else { return }
+                    self.logger.notice("MPRemoteCommandCenter received pauseCommand")
+                    self.handlePlayback(.playPause)
+                }
+                return .success
+            }
+            center.nextTrackCommand.addTarget { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, self.settingsManager.appSettings.mediaPlayerControlEnabled else { return }
+                    self.logger.notice("MPRemoteCommandCenter received nextTrackCommand")
+                    self.handlePlayback(.nextTrack)
+                }
+                return .success
+            }
+            center.previousTrackCommand.addTarget { [weak self] _ in
+                Task { @MainActor [weak self] in
+                    guard let self, self.settingsManager.appSettings.mediaPlayerControlEnabled else { return }
+                    self.logger.notice("MPRemoteCommandCenter received previousTrackCommand")
+                    self.handlePlayback(.previousTrack)
+                }
+                return .success
+            }
+        }
+        mediaPlayerController?.syncSystemNowPlayingSession()
+    }
+
+    /// Reconciles tap state against settings. Idempotent.
     func reconcile() {
-        if settingsManager.appSettings.mediaKeyControlEnabled && accessibility.isTrusted {
-            // Post-regrant taps can come up inert; arm a probe to surface that to the user.
+        if isAnyTapFeatureEnabled {
             let wasOffline = (tap == nil)
             start()
             if wasOffline && tap != nil {
@@ -214,6 +352,14 @@ final class MediaKeyMonitor {
             CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
             onRunLoopSourceRemoved?()
         }
+        if let globalNSEventMonitor {
+            NSEvent.removeMonitor(globalNSEventMonitor)
+            self.globalNSEventMonitor = nil
+        }
+        if let localNSEventMonitor {
+            NSEvent.removeMonitor(localNSEventMonitor)
+            self.localNSEventMonitor = nil
+        }
         tap = nil
         runLoopSource = nil
         logger.info("Media key tap removed")
@@ -221,8 +367,13 @@ final class MediaKeyMonitor {
 
     // MARK: - Event handling
 
-    /// Applies a decoded `MediaKeyEvent` to the default output device.
+    /// Applies a decoded `MediaKeyEvent` to the default output device or active media player.
     func handle(_ event: MediaKeyEvent, shiftHeld: Bool = false, optionHeld: Bool = false) {
+        if event.isPlaybackEvent {
+            handlePlayback(event)
+            return
+        }
+
         let volumeMonitor = audioEngine.deviceVolumeMonitor
         let deviceID = volumeMonitor.defaultDeviceID
         guard deviceID.isValid else {
@@ -248,6 +399,31 @@ final class MediaKeyMonitor {
                 )
             }
         )
+    }
+
+    func handlePlayback(_ event: MediaKeyEvent, fromSwallowingTap: Bool = false) {
+        // Deduplicate within 250ms in case CGEventTap, NSEvent monitor, and MPRemoteCommandCenter
+        // all observe the same physical or synthesized media key press.
+        let now = DispatchTime.now()
+        if let last = lastPlaybackDispatchTime {
+            let deltaMs = (now.uptimeNanoseconds &- last.uptimeNanoseconds) / 1_000_000
+            if deltaMs < 250 {
+                logger.debug("Deduplicated playback event (\(deltaMs)ms since last)")
+                return
+            }
+        }
+        lastPlaybackDispatchTime = now
+
+        switch event {
+        case .playPause:
+            mediaPlayerController?.playPauseToggle(fromSwallowingTap: fromSwallowingTap)
+        case .nextTrack:
+            mediaPlayerController?.nextTrack(fromSwallowingTap: fromSwallowingTap)
+        case .previousTrack:
+            mediaPlayerController?.previousTrack(fromSwallowingTap: fromSwallowingTap)
+        case .volumeUp, .volumeDown, .muteToggle:
+            break
+        }
     }
 
     /// `.ddc` tier coalesces repeats to an 80 ms floor; hardware/software pass them through.
@@ -315,6 +491,9 @@ final class MediaKeyMonitor {
                 hudController.show(sliderFraction: currentSlider, mute: newMute, deviceName: deviceName)
             }
             iconCoordinator?.flashDevice()
+
+        case .playPause, .nextTrack, .previousTrack:
+            handlePlayback(event)
         }
     }
 
@@ -333,19 +512,7 @@ final class MediaKeyMonitor {
 
     /// Kernel disabled the tap. One-shot re-enable; second disable inside 5s marks offline.
     func handleTapDisabled() {
-        // Runtime Accessibility revocation — tear down and let the permission card surface.
-        // `isOffline` stays false here; it's reserved for kernel-stall ("Retry") scenarios.
-        if !accessibility.isTrusted {
-            logger.warning("Tap disabled and Accessibility no longer trusted — stopping tap")
-            disableWatchdogTask?.cancel()
-            disableWatchdogTask = nil
-            watchdogOpen = false
-            stop()
-            accessibility.refresh()
-            return
-        }
-
-        logger.info("Tap disabled by kernel — attempting re-enable")
+        logger.notice("Tap disabled by kernel — attempting re-enable")
 
         if watchdogOpen {
             // Second disable inside the 5s window — feature is offline.
@@ -375,13 +542,32 @@ final class MediaKeyMonitor {
 
     /// Returns `true` if the caller should swallow the event.
     fileprivate func processSystemDefined(_ cgEvent: CGEvent) -> Bool {
-        // Pass through if disabled mid-race; never silently eat another app's media keys.
-        guard settingsManager.appSettings.mediaKeyControlEnabled else { return false }
+        guard isAnyTapFeatureEnabled else { return false }
         guard let nsEvent = NSEvent(cgEvent: cgEvent) else { return false }
         // Subtype 8 is the media-key channel; aux-button / brightness are pass-through.
         guard nsEvent.subtype.rawValue == 8 else { return false }
         let data1 = nsEvent.data1
-        guard let mediaEvent = decoder.decode(data1: data1) else { return false }
+        let keyType = Int32((data1 & 0xFFFF0000) >> 16)
+
+        // BeardedSpice F7/F8/F9 playback keys (16=Play, 17=Next, 18=Previous, 19=Fast, 20=Rewind):
+        // Swallow BOTH key-down and key-up so macOS `rcd` never receives key-up to launch Apple Music.
+        // Dispatch playback action asynchronously so the CGEventTap callback returns immediately (<1us)
+        // and never triggers kCGEventTapDisabledByTimeout during AppleScript IPC.
+        if keyType == 16 || keyType == 17 || keyType == 18 || keyType == 19 || keyType == 20 {
+            guard settingsManager.appSettings.mediaPlayerControlEnabled else { return false }
+            let swallowed = self.isSwallowingTap
+            if let mediaEvent = decoder.decode(data1: data1), mediaEvent.isPlaybackEvent {
+                logger.notice("Intercepted media playback key: keyType=\(keyType) (swallowed=\(swallowed))")
+                Task { @MainActor [weak self] in
+                    self?.handlePlayback(mediaEvent, fromSwallowingTap: swallowed)
+                }
+            }
+            return swallowed
+        }
+
+        // Volume keys (0=Up, 1=Down, 7=Mute):
+        guard settingsManager.appSettings.mediaKeyControlEnabled else { return false }
+        guard let mediaEvent = decoder.decode(data1: data1), mediaEvent.isVolumeEvent else { return false }
 
         hudController.swallowObserved()
         handle(
