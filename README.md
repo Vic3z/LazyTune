@@ -8,7 +8,7 @@ Control the volume of every app independently, route audio to different speakers
 <br clear="all"/>
 
 <p align="center">
-  <a href="https://github.com/Vic3z/LazyTune/releases/latest/download/LazyTune.dmg"><img src="assets/download-badge.svg" alt="Download for macOS" height="32"></a>
+  <a href="https://github.com/Vic3z/LazyTune/releases/latest/download/LazyTune.zip"><img src="assets/download-badge.svg" alt="Download for macOS" height="32"></a>
   <a href="https://github.com/Vic3z/LazyTune"><img src="https://img.shields.io/badge/Repo-Vic3z%2FLazyTune-0A84FF?style=for-the-badge&labelColor=1c1c1e&logo=github&logoColor=white" alt="GitHub Repository"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-3a3a3c?style=for-the-badge&labelColor=1c1c1e" alt="License: GPL v3"></a>
   <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-15.4%2B-3a3a3c?style=for-the-badge&labelColor=1c1c1e&logo=apple&logoColor=white" alt="macOS 15.4+"></a>
@@ -43,9 +43,9 @@ Control the volume of every app independently, route audio to different speakers
 
 ## 🚀 Download & Install
 
-### Option 1: Download DMG (Recommended)
-1. Download **[`LazyTune.dmg`](https://github.com/Vic3z/LazyTune/releases/latest/download/LazyTune.dmg)** from the [Releases](https://github.com/Vic3z/LazyTune/releases) page.
-2. Open `LazyTune.dmg` and drag **LazyTune.app** into your **Applications** folder.
+### Option 1: Download Prebuilt App (Recommended)
+1. Download **[`LazyTune.zip`](https://github.com/Vic3z/LazyTune/releases/latest/download/LazyTune.zip)** from the [Releases](https://github.com/Vic3z/LazyTune/releases) page.
+2. Double-click `LazyTune.zip` to extract **LazyTune.app** and drag it into your **Applications** folder.
 3. Since LazyTune is signed ad-hoc (without a paid Apple Developer ID), if macOS Gatekeeper blocks the first launch, run:
    ```bash
    xattr -cr /Applications/LazyTune.app
