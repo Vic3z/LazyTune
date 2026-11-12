@@ -16,11 +16,7 @@ Control the volume of every app independently, route audio to different speakers
 </p>
 
 <p align="center">
-  <img src="assets/screenshot-media.png" alt="LazyTune Universal Media Control showing the Now Playing mini-player bar, F7/F8/F9 hardware media key routing, and 100+ supported web and native players" width="740">
-</p>
-
-<p align="center">
-  <img src="assets/screenshot-main.png" alt="LazyTune popup showing per-app volume control, multi-device output routing, and device-level volume sliders" width="700">
+  <img src="assets/screenshot-media.png" alt="LazyTune popup showing the Now Playing mini-player bar, per-device output volume sliders, and per-app audio mixer" width="510">
 </p>
 
 ---

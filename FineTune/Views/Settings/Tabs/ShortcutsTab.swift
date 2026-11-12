@@ -56,7 +56,7 @@ struct ShortcutsTab: View {
         SettingsSection("Media Keys") {
             SettingsRow(
                 "Volume Media Keys (F10 / F11 / F12)",
-                description: "Use volume keys to control FineTune output volume and mute"
+                description: "Use volume keys to control LazyTune output volume and mute"
             ) {
                 Toggle("", isOn: $settings.appSettings.mediaKeyControlEnabled)
                     .toggleStyle(.switch)

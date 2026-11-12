@@ -74,7 +74,7 @@ struct MediaControlTab: View {
             SettingsRowDivider()
             SettingsRow(
                 "Now Playing Bar in Popup",
-                description: "Show interactive mini-player and target switcher at the top of the FineTune popup"
+                description: "Show interactive mini-player and target switcher at the top of the LazyTune popup"
             ) {
                 Toggle("", isOn: $settings.appSettings.showNowPlayingInPopup)
                     .toggleStyle(.switch)

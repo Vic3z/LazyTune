@@ -71,7 +71,7 @@ struct AboutTab: View {
             .buttonStyle(.plain)
 
             Text("·")
-            Text("© \(yearText) Ronit Singh")
+            Text("© \(yearText) Ronit Singh · Fork by Vic3z")
         }
         .font(.system(size: 10))
         .foregroundStyle(.tertiary)
