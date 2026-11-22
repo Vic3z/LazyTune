@@ -29,9 +29,11 @@ nonisolated struct AppSettings: Codable, Equatable {
 
     // Audio
     var defaultNewAppVolume: Float = 1.0      // 100% (unity gain)
+    var zeroTouchPassthrough: Bool = true     // Skip Process Tap until an app deviates from baseline
 
-    // Input Device Lock
+    // Input Device Lock & Output Priority
     var lockInputDevice: Bool = true          // Prevent auto-switching input device
+    var enforceOutputPriorityOrder: Bool = false  // Override macOS auto-switching with output priority order
 
     // Notifications
     var showDeviceDisconnectAlerts: Bool = true
@@ -78,7 +80,9 @@ nonisolated struct AppSettings: Codable, Equatable {
         launchAtLogin = try c.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? false
         menuBarIconStyle = try c.decodeIfPresent(MenuBarIconStyle.self, forKey: .menuBarIconStyle) ?? .default
         defaultNewAppVolume = try c.decodeIfPresent(Float.self, forKey: .defaultNewAppVolume) ?? 1.0
+        zeroTouchPassthrough = try c.decodeIfPresent(Bool.self, forKey: .zeroTouchPassthrough) ?? true
         lockInputDevice = try c.decodeIfPresent(Bool.self, forKey: .lockInputDevice) ?? true
+        enforceOutputPriorityOrder = try c.decodeIfPresent(Bool.self, forKey: .enforceOutputPriorityOrder) ?? false
         showDeviceDisconnectAlerts = try c.decodeIfPresent(Bool.self, forKey: .showDeviceDisconnectAlerts) ?? true
         loudnessCompensationEnabled = try c.decodeIfPresent(Bool.self, forKey: .loudnessCompensationEnabled) ?? false
         loudnessEqualizationEnabled = try c.decodeIfPresent(Bool.self, forKey: .loudnessEqualizationEnabled) ?? false

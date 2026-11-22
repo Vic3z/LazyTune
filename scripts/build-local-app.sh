@@ -183,9 +183,9 @@ cat > "$APP_BUNDLE/Contents/Info.plist" <<'PLIST'
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0.0-LazyTune</string>
+	<string>1.1.0</string>
 	<key>CFBundleVersion</key>
-	<string>210</string>
+	<string>211</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>15.0</string>
 	<key>LSUIElement</key>

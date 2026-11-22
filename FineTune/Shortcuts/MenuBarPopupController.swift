@@ -37,17 +37,30 @@ final class MenuBarPopupController: MenuBarPopupControlling {
     /// argument we pass to `FluidMenuBarExtra(...)` in `FineTuneApp`.
     private let accessibilityTitle: String
 
-    init(accessibilityTitle: String = "FineTune") {
+    init(accessibilityTitle: String = "LazyTune") {
         self.accessibilityTitle = accessibilityTitle
     }
 
-    func toggle() {
-        guard let statusItem = findStatusItem() else {
-            Self.logger.debug("toggle: no status item found yet (cold-launch race?); ignoring")
+    /// Shows the popup if it is not already visible, retrying briefly on cold launch
+    /// while `FluidMenuBarExtra` creates its status bar item.
+    func openWhenReady(retriesLeft: Int = 30) {
+        if isPopupWindowVisible() { return }
+        if findStatusButton() != nil {
+            toggle()
             return
         }
-        guard let button = statusItem.button, let window = button.window else {
-            Self.logger.debug("toggle: status item found but button/window missing; ignoring")
+        guard retriesLeft > 0 else {
+            Self.logger.debug("openWhenReady: status item did not appear within timeout")
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            self?.openWhenReady(retriesLeft: retriesLeft - 1)
+        }
+    }
+
+    func toggle() {
+        guard let button = findStatusButton(), let window = button.window else {
+            Self.logger.debug("toggle: no status button/window found yet (cold-launch race?); ignoring")
             return
         }
 
@@ -74,31 +87,48 @@ final class MenuBarPopupController: MenuBarPopupControlling {
         NSApp.postEvent(event, atStart: false)
     }
 
-    // MARK: - NSApp.windows + KVC introspection
-
-    /// macOS renamed the concrete `NSStatusItem` runtime class in the macOS 26
-    /// scene-based status item refactor. Keep both branches so we work across
-    /// the deployment-target floor (14.2) up through current 26.x.
-    private static var concreteStatusItemClassName: String {
-        if #available(macOS 26.0, *) {
-            return "NSSceneStatusItem"
-        }
-        return "NSStatusItem"
+    private func isPopupWindowVisible() -> Bool {
+        NSApp.windows.contains { $0.isVisible && $0.className.contains("FluidMenuBarExtraWindow") }
     }
+
+    private func findStatusButton() -> NSStatusBarButton? {
+        if let button = findStatusItem()?.button {
+            return button
+        }
+        for window in NSApp.windows {
+            guard window.className.contains("NSStatusBarWindow"),
+                  let contentView = window.contentView else { continue }
+            if let button = findStatusBarButton(in: contentView, matching: accessibilityTitle) {
+                return button
+            }
+        }
+        return nil
+    }
+
+    private func findStatusBarButton(in view: NSView, matching title: String) -> NSStatusBarButton? {
+        if let button = view as? NSStatusBarButton, button.accessibilityTitle() == title {
+            return button
+        }
+        for subview in view.subviews {
+            if let match = findStatusBarButton(in: subview, matching: title) {
+                return match
+            }
+        }
+        return nil
+    }
+
+    // MARK: - NSApp.windows + KVC introspection
 
     /// Exposed `internal` so tests can verify discovery without depending on
     /// `NSApp.postEvent` delivery, which is flaky in a unit-test process.
     func findStatusItem() -> NSStatusItem? {
-        let concreteName = Self.concreteStatusItemClassName
-
-        return NSApp.windows
+        NSApp.windows
             .filter { $0.className.contains("NSStatusBarWindow") }
             .compactMap(Self.extractStatusItem(from:))
             // Multi-display setups with "Displays have separate Spaces" enabled produce
             // one NSStatusBarWindow per display; the inactive ones return an
-            // `NSStatusItemReplicant` (a subclass of NSStatusItem). Skip replicants —
-            // we only want the canonical item that owns the real button.
-            .filter { $0.className == concreteName }
+            // `NSStatusItemReplicant`. Skip replicants so we target the canonical button.
+            .filter { !$0.className.contains("Replicant") }
             .first { $0.button?.accessibilityTitle() == accessibilityTitle }
     }
 

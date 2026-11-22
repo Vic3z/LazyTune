@@ -11,6 +11,20 @@ private let logger = Logger(subsystem: "com.finetuneapp.FineTune", category: "Ap
 final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
     var audioEngine: AudioEngine?
     var mediaPlayerController: MediaPlayerController?
+    var menuBarPopupController: MenuBarPopupController?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Open the menu bar popup automatically on launch so the user gets immediate
+        // visual confirmation that LazyTune is running.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
+            self?.menuBarPopupController?.openWhenReady()
+        }
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        menuBarPopupController?.openWhenReady()
+        return true
+    }
 
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let audioEngine = audioEngine else {
@@ -247,9 +261,10 @@ struct FineTuneApp: App {
         _shortcutsRegistry = State(initialValue: registry)
         _resolver = State(initialValue: resolver)
 
-        // Pass engine and media controller to AppDelegate
+        // Pass engine, media controller, and popup controller to AppDelegate
         _appDelegate.wrappedValue.audioEngine = engine
         _appDelegate.wrappedValue.mediaPlayerController = mediaPlayerCtrl
+        _appDelegate.wrappedValue.menuBarPopupController = popupController
 
         if permission.status == .unknown {
             permission.request()

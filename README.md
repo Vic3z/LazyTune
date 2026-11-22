@@ -34,6 +34,9 @@ Control the volume of every app independently, route audio to different speakers
 - **Tahoe Now Playing HUD** — Optional on-screen glass HUD displaying track metadata and playback state transitions when pressing media keys or switching players.
 
 ### ⚡ Ultra-Lightweight & Zero-Overhead Engine
+- **Zero-Touch Passthrough (Sticky)** — Apps left at default parameters (`100%` volume, `1x` boost, no EQ/AutoEQ/Loudness, system default output) bypass CoreAudio Process Taps completely for bit-perfect native macOS audio, `0 ms` extra latency, and zero crackling. Taps attach on-demand on first adjustment and clean up automatically after 30s of inactivity or on Mac sleep/wake. *(Toggleable in Settings → Audio).*
+- **Native macOS Bluetooth & Device Switching** — Connects Bluetooth headphones, USB DACs, and external displays with standard macOS behavior out of the box (optional *Enforce Output Priority Order* toggle in Settings → Audio).
+- **Sleep/Wake CoreAudio Resilience** — Automatically tears down active taps on sleep and rebuilds them cleanly after wake, disables unnecessary sub-tap drift resampling on shared hardware clock domains, and runs a dynamic Anti-App Nap guard strictly while taps are active.
 - **~50 MB RAM Footprint (-76% vs upstream)** — All 103 web media strategies are pre-compiled into a static JSON bundle (`MediaStrategies.json`), completely eliminating `JavaScriptCore` (`WebKit malloc`) from runtime memory.
 - **0.0% Idle CPU** — Uses native macOS push notifications (`DistributedNotificationCenter`) and in-memory CoreAudio peak levels instead of background AppleScript polling; pauses UI VU-meter timers completely while the popup is closed.
 - **Lazy-Loaded EQ & AutoEQ** — The 10-band biquad filter banks and the 6,000+ headphone AutoEQ catalog consume **0 bytes of RAM and 0% CPU** unless you explicitly enable EQ or open the AutoEQ picker.

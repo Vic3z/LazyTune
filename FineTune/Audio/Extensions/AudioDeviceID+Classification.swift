@@ -60,6 +60,12 @@ nonisolated extension AudioDeviceID {
     func isHidden() -> Bool {
         (try? readBool(kAudioDevicePropertyIsHidden)) ?? false
     }
+
+    /// Reads the device's CoreAudio clock domain (`0` when unknown/virtual).
+    /// Non-zero matching clock domains indicate shared hardware crystal timing.
+    func readClockDomain() -> UInt32 {
+        (try? read(kAudioDevicePropertyClockDomain, defaultValue: UInt32(0))) ?? 0
+    }
 }
 
 // MARK: - AutoEQ Eligibility

@@ -46,6 +46,9 @@ struct AudioTab: View {
         .onChange(of: settings.appSettings.loudnessEqualizationEnabled) { _, newValue in
             audioEngine.setLoudnessEqualizationEnabled(newValue)
         }
+        .onChange(of: settings.appSettings.zeroTouchPassthrough) { _, newValue in
+            audioEngine.handlePassthroughPreferenceChanged(enabled: newValue)
+        }
     }
 
     // MARK: - Volume
@@ -72,6 +75,16 @@ struct AudioTab: View {
                     .controlSize(.small)
                     .labelsHidden()
             }
+            SettingsRowDivider()
+            SettingsRow(
+                "Zero-Touch Passthrough",
+                description: "Bypass audio capture for apps at 100% with no effects or custom routing"
+            ) {
+                Toggle("", isOn: $settings.appSettings.zeroTouchPassthrough)
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .labelsHidden()
+            }
         }
     }
 
@@ -79,6 +92,16 @@ struct AudioTab: View {
 
     private var devicesSection: some View {
         SettingsSection("Devices") {
+            SettingsRow(
+                "Enforce Output Priority Order",
+                description: "Override macOS device switching using LazyTune's priority order"
+            ) {
+                Toggle("", isOn: $settings.appSettings.enforceOutputPriorityOrder)
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
+                    .labelsHidden()
+            }
+            SettingsRowDivider()
             SettingsRow(
                 "Lock Input Device",
                 description: "Prevent auto-switching when devices connect"

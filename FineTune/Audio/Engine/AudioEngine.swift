@@ -1,4 +1,5 @@
 // FineTune/Audio/Engine/AudioEngine.swift
+import AppKit
 import AudioToolbox
 import Foundation
 import os
@@ -49,6 +50,11 @@ final class AudioEngine {
     private var staleCleanupTask: Task<Void, Never>?  // Debounced cleanup scheduling
     private var healthMonitorTask: Task<Void, Never>?  // Periodic tap health monitor
     private var tapRecoveryCooldownUntil: [pid_t: Date] = [:]  // Prevents tap recreation thrashing
+    private var activeTapActivity: NSObjectProtocol?  // Disables App Nap strictly while taps exist
+    private var wakeRecoveryTask: Task<Void, Never>?
+    private var isSystemSleeping = false
+    @ObservationIgnored private nonisolated(unsafe) var sleepObserver: NSObjectProtocol?
+    @ObservationIgnored private nonisolated(unsafe) var wakeObserver: NSObjectProtocol?
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "FineTune", category: "AudioEngine")
 
     /// Optional callback invoked when an active output device disconnects so MediaPlayerController can auto-pause playback.
@@ -264,9 +270,11 @@ final class AudioEngine {
         wireCallbacks()
 
         if startMonitorsAutomatically {
+            registerSleepWakeObservers()
             Task { @MainActor in
                 if self.permission.status == .authorized {
                     self.processMonitor.start()
+                    self.startHealthMonitor()
                 }
                 self.deviceMonitor.start()
                 self.bluetoothDeviceMonitor.start()
@@ -295,6 +303,15 @@ final class AudioEngine {
         // Start process monitor when permission is granted
         if startMonitorsAutomatically && permission.status != .authorized {
             observePermissionGranted()
+        }
+    }
+
+    deinit {
+        if let sleepObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(sleepObserver)
+        }
+        if let wakeObserver {
+            NSWorkspace.shared.notificationCenter.removeObserver(wakeObserver)
         }
     }
 
@@ -336,6 +353,10 @@ final class AudioEngine {
                     )
                 }
             }
+            if self.outputVolumeBackend(for: deviceID) == .software,
+               self.deviceVolumeMonitor.outputProcessingGain(for: deviceID) < 0.999 {
+                self.reconcilePassthroughTaps()
+            }
         }
 
         deviceVolumeMonitor.onMuteChanged = { [weak self] deviceID, isMuted in
@@ -349,6 +370,9 @@ final class AudioEngine {
                         tap.volume = self.effectiveVolume(for: tap.app.id, deviceUIDs: tap.currentDeviceUIDs)
                     }
                 }
+            }
+            if isMuted && self.outputVolumeBackend(for: deviceID) == .software {
+                self.reconcilePassthroughTaps()
             }
         }
 
@@ -472,6 +496,7 @@ final class AudioEngine {
 
         if let tap = taps.removeValue(forKey: app.id) {
             tap.invalidate()
+            updateAppNapActivity()
         }
         appDeviceRouting.removeValue(forKey: app.id)
         followsDefault.remove(app.id)
@@ -587,6 +612,8 @@ final class AudioEngine {
     }
 
     func stop() {
+        wakeRecoveryTask?.cancel()
+        wakeRecoveryTask = nil
         stopHealthMonitor()
         processMonitor.stop()
         deviceMonitor.stop()
@@ -594,6 +621,7 @@ final class AudioEngine {
             tap.invalidate()
         }
         taps.removeAll()
+        updateAppNapActivity()
         logger.info("AudioEngine stopped")
     }
 
@@ -634,6 +662,9 @@ final class AudioEngine {
         }
 
         // 6. Re-apply from clean settings (re-establishes routing to system default)
+        if settingsManager.appSettings.zeroTouchPassthrough {
+            handlePassthroughPreferenceChanged(enabled: true)
+        }
         applyPersistedSettings()
 
         logger.info("Settings reset: engine state synchronized")
@@ -641,9 +672,7 @@ final class AudioEngine {
 
     func setVolume(for app: AudioApp, to volume: Float) {
         volumeState.setVolume(for: app.id, to: volume, identifier: app.persistenceIdentifier)
-        if let deviceUID = appDeviceRouting[app.id] {
-            ensureTapExists(for: app, deviceUID: deviceUID)
-        }
+        ensureTapForCurrentModeIfNeeded(for: app)
         if let tap = taps[app.id] {
             tap.volume = effectiveVolume(for: app.id, deviceUIDs: tap.currentDeviceUIDs)
             if settingsManager.appSettings.loudnessCompensationEnabled {
@@ -663,6 +692,7 @@ final class AudioEngine {
 
     func setBoost(for app: AudioApp, to boost: BoostLevel) {
         volumeState.setBoost(for: app.id, to: boost, identifier: app.persistenceIdentifier)
+        ensureTapForCurrentModeIfNeeded(for: app)
         if let tap = taps[app.id] {
             tap.volume = effectiveVolume(for: app.id, deviceUIDs: tap.currentDeviceUIDs)
         }
@@ -740,6 +770,7 @@ final class AudioEngine {
 
     func setMute(for app: AudioApp, to muted: Bool) {
         volumeState.setMute(for: app.id, to: muted, identifier: app.persistenceIdentifier)
+        ensureTapForCurrentModeIfNeeded(for: app)
         taps[app.id]?.isMuted = muted
     }
 
@@ -749,9 +780,10 @@ final class AudioEngine {
 
     /// Update EQ settings for an app
     func setEQSettings(_ settings: EQSettings, for app: AudioApp) {
+        settingsManager.setEQSettings(settings, for: app.persistenceIdentifier)
+        ensureTapForCurrentModeIfNeeded(for: app)
         guard let tap = taps[app.id] else { return }
         tap.updateEQSettings(settings)
-        settingsManager.setEQSettings(settings, for: app.persistenceIdentifier)
     }
 
     /// Get EQ settings for an app
@@ -772,6 +804,9 @@ final class AudioEngine {
         } else {
             settingsManager.setAutoEQSelection(for: deviceUID, to: nil)
         }
+        if profileID != nil {
+            reconcilePassthroughTaps()
+        }
         applyAutoEQToTaps(for: deviceUID)
     }
 
@@ -779,6 +814,9 @@ final class AudioEngine {
         guard var selection = settingsManager.getAutoEQSelection(for: deviceUID) else { return }
         selection.isEnabled = enabled
         settingsManager.setAutoEQSelection(for: deviceUID, to: selection)
+        if enabled {
+            reconcilePassthroughTaps()
+        }
         applyAutoEQToTaps(for: deviceUID)
     }
 
@@ -798,16 +836,43 @@ final class AudioEngine {
     }
 
     func setLoudnessCompensationEnabled(_ enabled: Bool) {
+        if enabled {
+            reconcilePassthroughTaps()
+        }
         for tap in taps.values {
             tap.updateLoudnessCompensation(volume: effectiveLoudnessVolume(for: tap), enabled: enabled)
         }
     }
 
     func setLoudnessEqualizationEnabled(_ enabled: Bool) {
+        if enabled {
+            reconcilePassthroughTaps()
+        }
         var settings = LoudnessEqualizerSettings()
         settings.enabled = enabled
         for tap in taps.values {
             tap.updateLoudnessEqualization(settings)
+        }
+    }
+
+    /// Reconciles active taps when Zero-Touch Passthrough is toggled in Settings.
+    /// Turning Passthrough OFF attaches taps to all active apps; turning it ON tears down
+    /// any currently-idle baseline taps while preserving customized ones.
+    func handlePassthroughPreferenceChanged(enabled: Bool) {
+        if enabled {
+            var removedAny = false
+            for (pid, tap) in taps {
+                if !needsAudioTap(for: tap.app, deviceUIDs: tap.currentDeviceUIDs) {
+                    taps.removeValue(forKey: pid)
+                    tap.invalidate()
+                    removedAny = true
+                }
+            }
+            if removedAny {
+                updateAppNapActivity()
+            }
+        } else {
+            reconcilePassthroughTaps()
         }
     }
 
@@ -1045,14 +1110,180 @@ final class AudioEngine {
                     logger.error("Failed to update devices for \(app.name): \(error.localizedDescription)")
                 }
             }
-        } else {
-            // No tap exists - create one
+        } else if needsAudioTap(for: app, deviceUIDs: deviceUIDs) {
+            // No tap exists - create one only when departing baseline/passthrough
             ensureTapWithDevices(for: app, deviceUIDs: deviceUIDs)
+        }
+    }
+
+    // MARK: - Zero-Touch Passthrough, Anti-App Nap & Sleep/Wake
+
+    /// Returns true if this app requires a CoreAudio Process Tap (DSP, gain != 1.0,
+    /// mute, explicit/multi-device routing, AutoEQ, software-attenuated output, or
+    /// Zero-Touch Passthrough disabled).
+    private func needsAudioTap(for app: AudioApp, deviceUIDs: [String]) -> Bool {
+        guard settingsManager.appSettings.zeroTouchPassthrough else { return true }
+
+        if abs(volumeState.getVolume(for: app.id) - 1.0) > 0.001 { return true }
+        if volumeState.getBoost(for: app.id) != .x1 { return true }
+        if volumeState.getMute(for: app.id) { return true }
+        if settingsManager.getEQSettings(for: app.persistenceIdentifier).isEnabled { return true }
+
+        if settingsManager.appSettings.loudnessCompensationEnabled
+            || settingsManager.appSettings.loudnessEqualizationEnabled {
+            return true
+        }
+
+        if getDeviceSelectionMode(for: app) == .multi && !deviceUIDs.isEmpty { return true }
+        if !followsDefault.contains(app.id) { return true }
+
+        if let primaryUID = deviceUIDs.first,
+           let device = deviceMonitor.device(for: primaryUID),
+           device.supportsAutoEQ,
+           let selection = settingsManager.getAutoEQSelection(for: primaryUID),
+           selection.isEnabled {
+            return true
+        }
+
+        if deviceUIDs.count == 1,
+           let primaryUID = deviceUIDs.first,
+           let device = deviceMonitor.device(for: primaryUID),
+           outputVolumeBackend(for: device.id) == .software,
+           deviceVolumeMonitor.outputProcessingGain(for: device.id) < 0.999 {
+            return true
+        }
+
+        return false
+    }
+
+    /// Resolves the active output UIDs for `app` without modifying routing state.
+    private func resolvedDeviceUIDs(for app: AudioApp) -> [String] {
+        if getDeviceSelectionMode(for: app) == .multi {
+            let selected = getSelectedDeviceUIDs(for: app)
+                .filter { deviceMonitor.device(for: $0) != nil }
+                .sorted()
+            if !selected.isEmpty {
+                return selected
+            }
+        }
+        if let routed = appDeviceRouting[app.id] {
+            return [routed]
+        }
+        if let defaultUID = deviceVolumeMonitor.defaultDeviceUID {
+            return [defaultUID]
+        }
+        return []
+    }
+
+    /// Ensures a tap is created on-demand if `app` no longer qualifies for Zero-Touch Passthrough.
+    /// Sticky: once created, an existing tap stays attached for the active audio session.
+    private func ensureTapForCurrentModeIfNeeded(for app: AudioApp) {
+        guard !isSystemSleeping else { return }
+        guard taps[app.id] == nil else { return }
+        let deviceUIDs = resolvedDeviceUIDs(for: app)
+        guard !deviceUIDs.isEmpty else { return }
+        guard needsAudioTap(for: app, deviceUIDs: deviceUIDs) else { return }
+
+        if deviceUIDs.count > 1 {
+            ensureTapWithDevices(for: app, deviceUIDs: deviceUIDs)
+        } else {
+            ensureTapExists(for: app, deviceUID: deviceUIDs[0])
+        }
+    }
+
+    /// Evaluates all active apps and attaches taps for any app that now requires processing.
+    private func reconcilePassthroughTaps() {
+        for app in apps {
+            ensureTapForCurrentModeIfNeeded(for: app)
+        }
+    }
+
+    /// Holds a lightweight ProcessInfo activity assertion strictly while active taps exist
+    /// so macOS never throttles/naps the process during audio playback, releasing it at idle.
+    private func updateAppNapActivity() {
+        if taps.isEmpty {
+            if let token = activeTapActivity {
+                ProcessInfo.processInfo.endActivity(token)
+                activeTapActivity = nil
+            }
+        } else if activeTapActivity == nil {
+            activeTapActivity = ProcessInfo.processInfo.beginActivity(
+                options: [.userInitiatedAllowingIdleSystemSleep, .latencyCritical],
+                reason: "Processing active CoreAudio process taps"
+            )
+        }
+    }
+
+    private func registerSleepWakeObservers() {
+        let nc = NSWorkspace.shared.notificationCenter
+        sleepObserver = nc.addObserver(
+            forName: NSWorkspace.willSleepNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.handleSystemWillSleep()
+            }
+        }
+        wakeObserver = nc.addObserver(
+            forName: NSWorkspace.didWakeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.handleSystemDidWake()
+            }
+        }
+    }
+
+    /// Tears down all active taps before macOS suspends audio hardware drivers so stale
+    /// pre-sleep AggregateDevice clock states never survive into the next wake cycle.
+    private func handleSystemWillSleep() {
+        isSystemSleeping = true
+        wakeRecoveryTask?.cancel()
+        wakeRecoveryTask = nil
+
+        guard !taps.isEmpty || !appliedPIDs.isEmpty else { return }
+        logger.info("[SLEEP] Releasing \(self.taps.count) active tap(s) before system sleep")
+        for tap in taps.values {
+            tap.invalidate()
+        }
+        taps.removeAll()
+        appliedPIDs.removeAll()
+        tapRecoveryCooldownUntil.removeAll()
+        updateAppNapActivity()
+    }
+
+    /// Rebuilds needed taps cleanly after wake once CoreAudio HAL drivers stabilize.
+    private func handleSystemDidWake() {
+        wakeRecoveryTask?.cancel()
+        wakeRecoveryTask = Task { @MainActor [weak self] in
+            // Allow built-in, HDMI/DisplayPort, USB, and Bluetooth drivers ~600ms to finish waking.
+            try? await Task.sleep(for: .milliseconds(600))
+            guard let self, !Task.isCancelled else { return }
+
+            self.isSystemSleeping = false
+
+            // Defensive sweep in case macOS entered sleep faster than willSleepNotification completed.
+            if !self.taps.isEmpty {
+                let staleTaps = Array(self.taps.values)
+                self.taps.removeAll()
+                self.updateAppNapActivity()
+                for tap in staleTaps {
+                    await tap.invalidateAsync()
+                }
+            }
+
+            self.appliedPIDs.removeAll()
+            self.tapRecoveryCooldownUntil.removeAll()
+            self.logger.info("[WAKE] Reconciling audio taps after system wake")
+            self.applyPersistedSettings()
         }
     }
 
     /// Creates a tap with the specified device UIDs
     private func ensureTapWithDevices(for app: AudioApp, deviceUIDs: [String]) {
+        guard !isSystemSleeping else { return }
         guard !deviceUIDs.isEmpty else { return }
         guard taps[app.id] == nil else { return }
         guard permission.status == .authorized else { return }
@@ -1069,6 +1300,7 @@ final class AudioEngine {
             )
             try tap.activate(initial: initial)
             taps[app.id] = tap
+            updateAppNapActivity()
 
             // Catalog AutoEQ may not have been cached yet — kick off async resolve.
             if initial.autoEQProfile == nil {
@@ -1083,6 +1315,7 @@ final class AudioEngine {
 
     func applyPersistedSettings() {
         guard permission.status == .authorized else { return }
+        guard !isSystemSleeping else { return }
 
         // Warm the AutoEQ cache for every (app, device) selection so that subsequent
         // tap activations can apply correction synchronously inside activate(initial:)
@@ -1121,24 +1354,23 @@ final class AudioEngine {
                     let availableUIDs = savedUIDs.filter { deviceMonitor.device(for: $0) != nil }
                         .sorted()  // Deterministic ordering
                     if !availableUIDs.isEmpty {
-                        logger.debug("Restoring multi-device mode for \(app.name) with \(availableUIDs.count) device(s)")
-                        ensureTapWithDevices(for: app, deviceUIDs: availableUIDs)
-
-                        // Mark as applied if tap created successfully
-                        guard taps[app.id] != nil else { continue }
                         // Set primary device routing so the UI row renders
                         appDeviceRouting[app.id] = availableUIDs[0]
-                        appliedPIDs.insert(app.id)
 
-                        // Apply volume (with boost) and mute
-                        if savedVolume != nil {
-                            if let tap = taps[app.id] {
+                        if needsAudioTap(for: app, deviceUIDs: availableUIDs) {
+                            logger.debug("Restoring multi-device mode for \(app.name) with \(availableUIDs.count) device(s)")
+                            ensureTapWithDevices(for: app, deviceUIDs: availableUIDs)
+
+                            // Mark as applied if tap created successfully
+                            guard taps[app.id] != nil else { continue }
+                            if savedVolume != nil, let tap = taps[app.id] {
                                 applyTapOutputState(to: tap, for: app.id, deviceUIDs: availableUIDs)
                             }
+                            if let muted = savedMute, muted {
+                                taps[app.id]?.isMuted = true
+                            }
                         }
-                        if let muted = savedMute, muted {
-                            taps[app.id]?.isMuted = true
-                        }
+                        appliedPIDs.insert(app.id)
                         continue  // Skip single-device path
                     }
                     // All saved devices unavailable - fall through to single-device mode
@@ -1192,12 +1424,12 @@ final class AudioEngine {
                 continue
             }
 
-            // Always create tap for audio apps (always-on strategy)
-            ensureTapExists(for: app, deviceUID: deviceUID)
+            // Create tap only when app deviates from Zero-Touch Passthrough baseline
+            if needsAudioTap(for: app, deviceUIDs: [deviceUID]) {
+                ensureTapExists(for: app, deviceUID: deviceUID)
+                guard taps[app.id] != nil else { continue }
+            }
 
-            // Only mark as applied if tap was successfully created
-            // This allows retry on next applyPersistedSettings() call if tap failed
-            guard taps[app.id] != nil else { continue }
             appliedPIDs.insert(app.id)
 
             if savedVolume != nil {
@@ -1215,6 +1447,7 @@ final class AudioEngine {
     }
 
     private func ensureTapExists(for app: AudioApp, deviceUID: String) {
+        guard !isSystemSleeping else { return }
         guard taps[app.id] == nil else { return }
         guard permission.status == .authorized else { return }
 
@@ -1230,6 +1463,7 @@ final class AudioEngine {
             )
             try tap.activate(initial: initial)
             taps[app.id] = tap
+            updateAppNapActivity()
 
             // Catalog AutoEQ may not have been cached yet — kick off async resolve.
             // Imported profiles always hit the synchronous path above.
@@ -1525,6 +1759,13 @@ final class AudioEngine {
             }
         }
 
+        // Respect native macOS device-switching behavior unless the user explicitly enables
+        // priority override in Settings -> Audio -> Devices.
+        guard settingsManager.appSettings.enforceOutputPriorityOrder else {
+            lastConfirmedDefaultUID = deviceVolumeMonitor.defaultDeviceUID
+            return
+        }
+
         // Only override the default if the newly connected device IS the highest-priority
         // device (i.e., a higher-priority device just came back). If a lower-priority device
         // connects while the user is on a higher-priority device, respect the current default —
@@ -1684,9 +1925,9 @@ final class AudioEngine {
 
     /// Called when system default output device changes - switches apps that follow default
     private func handleDefaultDeviceChanged(_ newDefaultUID: String) {
-        // State machine: if we're waiting for macOS to auto-switch after a device connect,
-        // check whether this change is the expected auto-switch or user intent.
-        if case .pendingAutoSwitch(let pendingUID, let timeoutTask) = outputPriorityState {
+        // Ignore priority auto-switch state machine when native macOS device switching is active.
+        if settingsManager.appSettings.enforceOutputPriorityOrder,
+           case .pendingAutoSwitch(let pendingUID, let timeoutTask) = outputPriorityState {
             // Check echoes FIRST — FineTune's own changes (UI, restoreConfirmedDefault)
             // create echoes. Consuming before Case 1 ensures FineTune UI changes aren't
             // mistaken for macOS auto-switches.
@@ -1767,6 +2008,7 @@ final class AudioEngine {
             // Genuine change to a live device — route followsDefault apps
             lastConfirmedDefaultUID = newDefaultUID
             routeFollowsDefaultApps(to: newDefaultUID)
+            reconcilePassthroughTaps()
 
             let affectedApps = apps.filter { followsDefault.contains($0.id) }
             if !affectedApps.isEmpty {
@@ -1857,6 +2099,7 @@ final class AudioEngine {
                 // Now safe to cleanup
                 if let tap = self.taps.removeValue(forKey: pid) {
                     tap.invalidate()
+                    self.updateAppNapActivity()
                     self.logger.debug("Cleaned up stale tap for PID \(pid)")
                 }
                 self.appDeviceRouting.removeValue(forKey: pid)

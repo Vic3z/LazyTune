@@ -394,11 +394,18 @@ final class ProcessTapController: ProcessTapControlling {
 
         // Sub-tap drift comp must be OFF when the tap source and output share a clock domain:
         // Bluetooth (tap and output both follow the BT clock — enabling it makes the HAL insert/
-        // delete a sample on the ~50ppm BT-vs-crystal offset every ~0.7s, the rhythmic call crackle)
-        // and virtual sources (burst delivery looks like drift). ON for wired/USB where the crystal
-        // domains genuinely differ. Defaults OFF on an unresolvable device (less wrong on unknown BT).
-        let isPrimaryBTOutput = audioDeviceID(for: plan.clockDeviceUID)?.isBluetoothDevice() ?? true
-        let tapDriftCompensation = !isTapSourceVirtual() && !isPrimaryBTOutput
+        // delete a sample on the ~50ppm BT-vs-crystal offset every ~0.7s, the rhythmic call crackle),
+        // virtual sources (burst delivery looks like drift), and same device / shared clock domain
+        // (e.g. BuiltInSpeakerDevice tapping BuiltInSpeakerDevice on the same crystal clock).
+        // ON only when wired tap source and output use genuinely distinct hardware crystal clocks.
+        let clockDeviceID = audioDeviceID(for: plan.clockDeviceUID)
+        let isPrimaryBTOutput = clockDeviceID?.isBluetoothDevice() ?? true
+        let tapSourceDeviceID = preferredTapSourceDeviceUID.flatMap { audioDeviceID(for: $0) }
+        let tapClockDomain = tapSourceDeviceID?.readClockDomain() ?? 0
+        let outputClockDomain = clockDeviceID?.readClockDomain() ?? 0
+        let sharesClockWithOutput = (preferredTapSourceDeviceUID == plan.clockDeviceUID)
+            || (tapClockDomain != 0 && tapClockDomain == outputClockDomain)
+        let tapDriftCompensation = !isTapSourceVirtual() && !isPrimaryBTOutput && !sharesClockWithOutput
 
         return [
             kAudioAggregateDeviceNameKey: name,
@@ -1550,7 +1557,7 @@ final class ProcessTapController: ProcessTapControlling {
             if totalSamplesThisBuffer == 0 {
                 totalSamplesThisBuffer = sampleCount / channels
             }
-            for i in stride(from: 0, to: sampleCount, by: channels) {
+            for i in 0..<sampleCount {
                 let absSample = abs(inputSamples[i])
                 if absSample > maxPeak { maxPeak = absSample }
             }
